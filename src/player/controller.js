@@ -40,7 +40,7 @@ export class Player {
       if (v.y < 0) { this.grounded = moved > v.y * 0.5; if (this.grounded) this.vy = 0; } // blocked below: standing on something
       else if (moved < v.y * 0.5) this.vy = 0; // bumped a ceiling
     }
-    this.character.root.position.copyFrom(this.body.position); this.character.update(dt, gesture || (!this.grounded ? 'jump' : moving ? running ? 'run' : 'walk' : 'idle'));
+    this.character.root.position.copyFrom(this.body.position); this.character.update(dt, gesture || (moving ? running ? 'run' : 'walk' : 'idle'));
     this.shadow.position.x = this.body.position.x; this.shadow.position.z = this.body.position.z;
     if (this.cinematic) { this.camera.position.set(5.5, 4.2, 6.8); this.camera.setTarget(new Vector3(0, 1.1, 6.5)); return; }
     const target = this.body.position.add(new Vector3(0, 1.45, 0));

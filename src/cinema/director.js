@@ -3,6 +3,7 @@
 // so pausing freezes camera, events, subtitles and (with the suspended AudioContext) every sound.
 import { UniversalCamera, Vector3, MeshBuilder, StandardMaterial, Color3 } from '@babylonjs/core';
 import { keycap } from '../ui/ui.js';
+import { t } from '../i18n/index.js';
 
 const smooth = t => t * t * (3 - 2 * t);
 const v3 = a => new Vector3(a[0], a[1], a[2]);
@@ -76,7 +77,7 @@ export class Director {
     const total = def.shots.reduce((a, s) => a + s.dur, 0);
     this.active = { id, def, rig, onEnd, t: 0, total, fired: 0, events: [...def.events].sort((a, b) => a.at - b.at), actors: new Actors(game), fx: new Effects(game) };
     ui.letterbox(true); ui.subtitle(null);
-    const hint = document.createElement('div'); hint.className = 'skip-hint'; hint.innerHTML = `${keycap('Espacio')} saltar`;
+    const hint = document.createElement('div'); hint.className = 'skip-hint'; hint.innerHTML = t('cinema.skip', { key: keycap(t('keys.space')) });
     ui.cinema.append(hint); this.active.hint = hint;
     this.update(0);
   }

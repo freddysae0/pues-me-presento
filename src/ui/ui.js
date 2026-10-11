@@ -5,6 +5,7 @@
 // See docs/UI.md for the component catalogue and the rules for cinematics/minigames.
 import { debateCast } from '../data/parties.js';
 import { script } from '../data/script/index.js';
+import { t, speakerLabel } from '../i18n/index.js';
 
 export const escapeHTML = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const esc = escapeHTML;
@@ -48,10 +49,10 @@ export function icon(name, className = '') {
 // ---------------------------------------------------------------- stats
 /** The four campaign stats, in HUD order. `threshold` is the electoral bar shown as a tick. */
 export const STATS = [
-  { key: 'support', label: 'Apoyo', icon: 'support', color: 'var(--c-support)' },
-  { key: 'credibility', label: 'Credibilidad', icon: 'credibility', color: 'var(--c-cred)' },
-  { key: 'organization', label: 'Organización', icon: 'organization', color: 'var(--c-org)' },
-  { key: 'reach', label: 'Alcance', icon: 'reach', color: 'var(--c-reach)' },
+  { key: 'support', label: t('stats.support'), icon: 'support', color: 'var(--c-support)' },
+  { key: 'credibility', label: t('stats.credibility'), icon: 'credibility', color: 'var(--c-cred)' },
+  { key: 'organization', label: t('stats.organization'), icon: 'organization', color: 'var(--c-org)' },
+  { key: 'reach', label: t('stats.reach'), icon: 'reach', color: 'var(--c-reach)' },
 ];
 const statByKey = Object.fromEntries(STATS.map(s => [s.key, s]));
 
@@ -126,7 +127,7 @@ export function speakerColor(name = '') {
   return `hsl(${h} 62% 62%)`;
 }
 
-const PLACES = { flat: 'EL PISO', plaza: 'EL BARRIO', hq: 'LA SEDE', hall: 'SALÓN MULTIUSOS' };
+const PLACES = { flat: t('hud.places.flat'), plaza: t('hud.places.plaza'), hq: t('hud.places.hq'), hall: t('hud.places.hall') };
 
 // ---------------------------------------------------------------- UI layer manager
 export class UI {
@@ -165,13 +166,13 @@ export class UI {
     if (!this.hud.querySelector('.hud-brand')) this.buildHUD();
     const h = this.hud, party = state.party;
     h.style.setProperty('--party', party?.color || 'var(--tomato)');
-    h.querySelector('.hud-party').textContent = party?.name || 'Pues me presento';
+    h.querySelector('.hud-party').textContent = party?.name || t('hud.defaultParty');
     h.querySelector('.hud-mark').textContent = (party?.name || 'P').trim().charAt(0).toUpperCase();
     h.querySelector('.hud-place').textContent = PLACES[state.scene] || '';
     for (const s of STATS) {
       const el = h.querySelector(`[data-stat="${s.key}"]`), v = state[s.key], old = Number(el.dataset.value);
       el.style.setProperty('--v', `${Math.max(0, Math.min(100, v))}%`); el.querySelector('b').textContent = v;
-      el.setAttribute('aria-label', `${s.label}: ${v} de 100`);
+      el.setAttribute('aria-label', t('hud.statAria', { label: s.label, value: v }));
       if (el.dataset.value !== undefined && !Number.isNaN(old) && old !== v) this.bump(el, v - old);
       el.dataset.value = v;
     }
@@ -186,9 +187,9 @@ export class UI {
   }
   buildHUD() {
     this.hud.innerHTML = `<div class="hud-brand"><span class="hud-mark" aria-hidden="true">P</span><span class="hud-name"><span class="hud-party"></span><small>${icon('pin')}<span class="hud-place"></span></small></span></div>
-<div class="stats" role="group" aria-label="Estado de la campaña">${STATS.map(s => `<div class="stat" data-stat="${s.key}" style="--c:${s.color}" title="${s.label}"><span class="stat-icon">${icon(s.icon)}</span><span class="stat-body"><span class="stat-label">${s.label}</span><b>0</b><span class="stat-bar"><i></i><em title="Umbral 48"></em></span></span></div>`).join('')}</div>
-<div class="objective"><span class="obj-tab">${icon('flag')}MISIÓN <span class="obj-step"></span></span><strong></strong><p></p></div>
-<div class="controls" aria-label="Controles"><span>${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')} mover</span><span>${keycap('⇧')} correr</span><span>${keycap('E')} hablar / usar</span><span>${keycap('M')} móvil</span><span>${keycap('Esc')} pausa</span></div>`;
+<div class="stats" role="group" aria-label="${t('hud.statsGroup')}">${STATS.map(s => `<div class="stat" data-stat="${s.key}" style="--c:${s.color}" title="${s.label}"><span class="stat-icon">${icon(s.icon)}</span><span class="stat-body"><span class="stat-label">${s.label}</span><b>0</b><span class="stat-bar"><i></i><em title="${t('hud.threshold')}"></em></span></span></div>`).join('')}</div>
+<div class="objective"><span class="obj-tab">${icon('flag')}${t('hud.mission')} <span class="obj-step"></span></span><strong></strong><p></p></div>
+<div class="controls" aria-label="${t('hud.controlsLabel')}"><span>${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')} ${t('hud.move')}</span><span>${keycap('⇧')} ${t('hud.run')}</span><span>${keycap('E')} ${t('hud.use')}</span><span>${keycap('M')} ${t('hud.phone')}</span><span>${keycap('Esc')} ${t('hud.pause')}</span></div>`;
   }
   bump(el, delta) {
     el.classList.remove('bump-up', 'bump-down'); void el.offsetWidth; el.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
@@ -203,7 +204,7 @@ export class UI {
     this.promptKey = key; this.prompt.hidden = !entity;
     if (entity) {
       this.prompt.classList.toggle('locked', !allowed);
-      this.prompt.innerHTML = `<kbd>E</kbd><span>${escapeHTML(entity.label)}${allowed ? '' : '<small>Primero termina el objetivo actual</small>'}</span>`;
+      this.prompt.innerHTML = `<kbd>E</kbd><span>${escapeHTML(entity.label)}${allowed ? '' : `<small>${t('hud.locked')}</small>`}</span>`;
     }
   }
 
@@ -215,7 +216,7 @@ export class UI {
     const el = this.cinema.querySelector('.subtitle');
     if (!text) { el.hidden = true; el.innerHTML = ''; return; }
     el.hidden = false; el.style.setProperty('--speaker', speakerColor(speaker || ''));
-    el.innerHTML = `${speaker ? `<b>${esc(speaker)}</b>` : ''}<span>${esc(text)}</span>`;
+    el.innerHTML = `${speaker ? `<b>${esc(speakerLabel(speaker))}</b>` : ''}<span>${esc(text)}</span>`;
   }
   /** Chapter / milestone title card. Removes itself when its CSS animation ends (frozen while paused). */
   banner(eyebrow, title, { icon: iconName = 'star', kind = '' } = {}) {

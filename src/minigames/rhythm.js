@@ -5,6 +5,7 @@ import { Actors, stageCamera } from '../cinema/director.js';
 import { VIRAL_LANES, VIRAL_BPM, VIRAL_CHART, VIRAL_TAKES, RALLY_BPM, rallyChart } from '../data/minigames.js';
 import { viralBonus, rallyBonus } from '../state/minigames.js';
 import { script, say } from '../data/script/index.js';
+import { t, formatNumber } from '../i18n/index.js';
 
 const VT = script.minigames.viral, RT = script.minigames.rally;
 
@@ -53,14 +54,14 @@ class Rhythm {
     let best = null;
     for (const n of this.notes) if (!n.judged && n.lane === lane && Math.abs(n.t - this.t) <= GOOD && (!best || Math.abs(n.t - this.t) < Math.abs(best.t - this.t))) best = n;
     if (best) this.judge(best, Math.abs(best.t - this.t) <= PERFECT ? 'perfect' : 'good');
-    else { this.combo = 0; this.flash('whiff', '¡Fuera de ritmo!'); this.onWhiff?.(); this.game.audio.tone(150, 0.08, 0.05); }
+    else { this.combo = 0; this.flash('whiff', t('rhythm.offBeat')); this.onWhiff?.(); this.game.audio.tone(150, 0.08, 0.05); }
   }
   judge(n, kind) {
     n.judged = kind; if (n.el) n.el.hidden = true;
     if (kind === 'miss') this.combo = 0; else { this.hits++; this.combo++; this.best = Math.max(this.best, this.combo); }
     if (kind === 'perfect') this.perfects++;
     this.points += kind === 'perfect' ? 2 : kind === 'good' ? 1 : 0;
-    this.flash(kind, { perfect: '¡PERFECTO!', good: '¡BIEN!', miss: 'FALLO' }[kind]);
+    this.flash(kind, t(`rhythm.${kind}`));
     this.game.audio.tone(kind === 'perfect' ? 784 : kind === 'good' ? 587 : 165, 0.12, 0.08);
     this.onJudge(kind, n);
   }
@@ -94,7 +95,7 @@ export class ViralGame extends Rhythm {
     this.id = 'viral'; this.goWord = say(VT.goWord, game.state);
     this.eyebrow = say(VT.eyebrow, game.state); this.title = say(VT.title, game.state);
     this.intro = say(VT.intro, game.state, { take: esc(VIRAL_TAKES[choice?.id] || '') });
-    this.howto = [[`${keycap('←')}${keycap('↑')}${keycap('→')}${keycap('↓')}`, 'o WASD: saludo, arriba, palmas, encogerse'], [keycap('Espacio'), 'empezar la toma']];
+    this.howto = [[`${keycap('←')}${keycap('↑')}${keycap('→')}${keycap('↓')}`, t('viral.howtoKeys')], [keycap(t('keys.space')), t('viral.howtoStart')]];
   }
   stage() {
     const p = this.game.player; p.body.position.set(5.5, 0.02, 6); p.character.root.position.copyFrom(p.body.position); p.character.root.rotation.y = Math.PI;
@@ -104,13 +105,13 @@ export class ViralGame extends Rhythm {
   reset() { super.reset(); this.views = 0; }
   hud() {
     return `<b class="rhythm-count"></b><div class="rec-frame" aria-hidden="true"><span class="rec">${icon('play')}REC <b class="rec-time">00:00</b></span></div>
-<div class="mg-top"><span class="chip-big">${icon('reach')}<b class="views">0</b> visualizaciones</span><span class="chip-big">COMBO <b class="combo">0</b></span><button class="secondary small" id="mg-skip-play">Saltar ${keycap('X')}</button></div>
-<div class="mg-bottom panel">${this.laneHTML()}<p class="fine">${keycap('R')} repetir toma · ${keycap('X')} saltar sin bonus · ${keycap('Esc')} pausa</p></div>`;
+<div class="mg-top"><span class="chip-big">${icon('reach')}<b class="views">0</b> ${t('viral.views')}</span><span class="chip-big">${t('viral.combo')} <b class="combo">0</b></span><button class="secondary small" id="mg-skip-play">${t('minigame.skip', { key: keycap('X') })}</button></div>
+<div class="mg-bottom panel">${this.laneHTML()}<p class="fine">${t('viral.keys', { r: keycap('R'), x: keycap('X'), esc: keycap('Esc') })}</p></div>`;
   }
   mount(root) { super.mount(root); this.viewsEl = root.querySelector('.views'); this.comboEl = root.querySelector('.combo'); this.recEl = root.querySelector('.rec-time'); }
   tick() {
     const s = Math.max(0, this.t); this.recEl.textContent = `00:${String(Math.floor(s)).padStart(2, '0')}`;
-    this.comboEl.textContent = this.combo; this.viewsEl.textContent = this.views.toLocaleString('es-ES');
+    this.comboEl.textContent = this.combo; this.viewsEl.textContent = formatNumber(this.views);
   }
   onJudge(kind, n) {
     if (kind === 'miss') { this.actors.set(WATCHERS[n.i % WATCHERS.length], 'shrug', 1.2); return; }
@@ -121,7 +122,7 @@ export class ViralGame extends Rhythm {
   result() {
     const a = this.points / this.max, bonus = viralBonus({ points: this.points, max: this.max });
     return {
-      score: this.points, bonus, great: a >= 0.85, badge: `Ritmo ${Math.round(a * 100)}% · combo ${this.best} · ${this.views.toLocaleString('es-ES')} visualizaciones`,
+      score: this.points, bonus, great: a >= 0.85, badge: t('viral.badge', { pct: Math.round(a * 100), combo: this.best, views: formatNumber(this.views) }),
       title: say(a >= 0.85 ? VT.titles.great : a >= 0.5 ? VT.titles.ok : VT.titles.bad, this.game.state),
       text: say(a >= 0.5 ? VT.texts.ok : VT.texts.bad, this.game.state),
     };
@@ -132,11 +133,11 @@ export class ViralGame extends Rhythm {
 const HALL_CROWD = ['Ana', 'Berto', 'Cris', 'Dora', 'Eloy', 'Fina'];
 export class RallyGame extends Rhythm {
   constructor(game) {
-    super(game, { lanes: [{ codes: ['Space', 'Enter'], key: 'Espacio', label: say(RT.lane, game.state), gesture: 'cheer_arms', color: 'var(--tomato)' }], bpm: RALLY_BPM, chart: rallyChart(game.state).map(n => ({ ...n, lane: 0 })), lead: 2.8 });
+    super(game, { lanes: [{ codes: ['Space', 'Enter'], key: t('keys.space'), label: say(RT.lane, game.state), gesture: 'cheer_arms', color: 'var(--tomato)' }], bpm: RALLY_BPM, chart: rallyChart(game.state).map(n => ({ ...n, lane: 0 })), lead: 2.8 });
     this.id = 'rally'; this.goWord = say(RT.goWord, game.state);
     this.eyebrow = say(RT.eyebrow, game.state); this.title = say(RT.title, game.state);
     this.intro = say(RT.intro, game.state);
-    this.howto = [[keycap('Espacio'), 'rematar la frase al compás'], [icon('support'), 'mantén la atención por encima de la mitad']];
+    this.howto = [[keycap(t('keys.space')), t('rally.howtoHit')], [icon('support'), t('rally.howtoAttention')]];
   }
   stage() {
     const p = this.game.player; p.body.position.set(-3, 0.57, 4.35); p.character.root.position.copyFrom(p.body.position); p.character.root.rotation.y = Math.PI;
@@ -145,8 +146,8 @@ export class RallyGame extends Rhythm {
   }
   reset() { super.reset(); this.attention = 0.55; this.game.reaction = null; this.game.playerGesture = 'talk'; }
   hud() {
-    return `<b class="rhythm-count"></b><div class="mg-top"><div class="panel attention">${meterBar(0.55, { label: 'ATENCIÓN DEL PÚBLICO', color: 'var(--c-support)', id: 'mg-attention' })}</div><button class="secondary small" id="mg-skip-play">Saltar ${keycap('X')}</button></div>
-<div class="mg-bottom panel"><p class="rally-phrase"><span></span> <b></b></p>${this.laneHTML()}<p class="fine">${keycap('R')} repetir · ${keycap('X')} saltar sin bonus · ${keycap('Esc')} pausa</p></div>`;
+    return `<b class="rhythm-count"></b><div class="mg-top"><div class="panel attention">${meterBar(0.55, { label: t('rally.attention'), color: 'var(--c-support)', id: 'mg-attention' })}</div><button class="secondary small" id="mg-skip-play">${t('minigame.skip', { key: keycap('X') })}</button></div>
+<div class="mg-bottom panel"><p class="rally-phrase"><span></span> <b></b></p>${this.laneHTML()}<p class="fine">${t('rally.keys', { r: keycap('R'), x: keycap('X'), esc: keycap('Esc') })}</p></div>`;
   }
   mount(root) {
     super.mount(root); this.meter = root.querySelector('#mg-attention'); this.phrase = root.querySelector('.rally-phrase');
@@ -172,7 +173,7 @@ export class RallyGame extends Rhythm {
   result() {
     const bonus = rallyBonus({ hits: this.hits, notes: this.notes.length, attention: this.attention }), a = this.hits / this.notes.length;
     return {
-      score: this.points, bonus, great: a >= 0.85 && this.attention >= 0.6, badge: `${this.hits}/${this.notes.length} remates · atención ${Math.round(this.attention * 100)}%`,
+      score: this.points, bonus, great: a >= 0.85 && this.attention >= 0.6, badge: t('rally.badge', { hits: this.hits, total: this.notes.length, pct: Math.round(this.attention * 100) }),
       title: say(a >= 0.85 ? RT.titles.great : a >= 0.5 ? RT.titles.ok : RT.titles.bad, this.game.state),
       text: say(RT.text, this.game.state),
     };

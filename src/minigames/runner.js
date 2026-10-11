@@ -2,6 +2,7 @@
 // Nothing touches the campaign state until onCommit: abandoning (pause -> menu, reload) changes nothing,
 // and skipping commits an empty bonus. main.js only calls update(dt) in 'minigame' mode, so pause freezes it.
 import { panel, icon, keycap, buttons, resultStats } from '../ui/ui.js';
+import { t } from '../i18n/index.js';
 
 /** mg: { id, eyebrow, title, intro, howto: [[keysHTML, text]], movement?, stage(), reset(), hud(), mount(root), update(dt), key(e), result(), dispose(), debug?() } */
 export function runMinigame(game, mg, onCommit) {
@@ -29,7 +30,7 @@ export function runMinigame(game, mg, onCommit) {
   function intro() {
     phase = 'intro';
     const howto = `<ul class="mg-howto">${mg.howto.map(([keys, text]) => `<li><span>${keys}</span><b>${text}</b></li>`).join('')}</ul>`;
-    game.ui.show(panel(mg.eyebrow, mg.title, `<p>${mg.intro}</p>${howto}<p class="fine">Sin penalización: puedes repetir con ${keycap('R')} o saltarlo con ${keycap('X')} (sin bonus). Solo cuenta el resultado que aceptes.</p>` + buttons([{ id: 'mg-start', kind: 'primary', icon: 'play', label: `Empezar ${keycap('Espacio')}` }, { id: 'mg-skip', icon: 'arrow', label: `Saltar ${keycap('X')}` }]), '', { icon: 'sparkle', className: 'mg-card' }), 'minigame-overlay centered');
+    game.ui.show(panel(mg.eyebrow, mg.title, `<p>${mg.intro}</p>${howto}<p class="fine">${t('minigame.introFine', { r: keycap('R'), x: keycap('X') })}</p>` + buttons([{ id: 'mg-start', kind: 'primary', icon: 'play', label: t('minigame.start', { key: keycap(t('keys.space')) }) }, { id: 'mg-skip', icon: 'arrow', label: t('minigame.skip', { key: keycap('X') }) }]), '', { icon: 'sparkle', className: 'mg-card' }), 'minigame-overlay centered');
     game.ui.on('mg-start', start); game.ui.on('mg-skip', skip);
   }
   function start() {
@@ -44,7 +45,7 @@ export function runMinigame(game, mg, onCommit) {
   function finish() {
     phase = 'result'; player.setEnabled(false); game.playerGesture = null;
     last = mg.result();
-    game.ui.show(panel(mg.eyebrow, last.title, `<p>${last.text}</p>${Object.keys(last.bonus).length ? resultStats(last.bonus) : `<p class="note">${icon('chat')}<span>Esta vez no suma nada. Tampoco resta: puedes repetir.</span></p>`}<p class="fine"><span class="score-badge">${icon('star')} ${last.badge}</span> El bonus se aplica una sola vez, al aceptar.</p>` + buttons([{ id: 'mg-accept', kind: 'primary', icon: 'check', label: `Aceptar ${keycap('Espacio')}` }, { id: 'mg-retry', icon: 'retry', label: `Repetir ${keycap('R')}` }]), '', { icon: 'star', className: 'mg-card' }), 'minigame-overlay centered');
+    game.ui.show(panel(mg.eyebrow, last.title, `<p>${last.text}</p>${Object.keys(last.bonus).length ? resultStats(last.bonus) : `<p class="note">${icon('chat')}<span>${t('minigame.noBonus')}</span></p>`}<p class="fine"><span class="score-badge">${icon('star')} ${last.badge}</span> ${t('minigame.bonusFine')}</p>` + buttons([{ id: 'mg-accept', kind: 'primary', icon: 'check', label: t('minigame.accept', { key: keycap(t('keys.space')) }) }, { id: 'mg-retry', icon: 'retry', label: t('minigame.retry', { key: keycap('R') }) }]), '', { icon: 'star', className: 'mg-card' }), 'minigame-overlay centered');
     game.ui.on('mg-accept', () => commit(last)); game.ui.on('mg-retry', start);
     if (last.great) game.ui.confetti(40);
   }

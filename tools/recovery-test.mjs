@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: 'es-ES' }); // es-ES: the checks read Spanish text (src/i18n)
 const errors = []; page.on('pageerror', e => errors.push(e.message));
 const state = () => page.evaluate(() => window.gameDebug.state());
 const mode = () => page.evaluate(() => document.body.dataset.mode);

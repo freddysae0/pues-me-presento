@@ -14,19 +14,24 @@
 // POLÍTICAS DE LOS RIVALES: { tech|populist|hard: [{ id, after, topic, text }] }. Cada una genera además una
 // notificación de prensa («X propone…»). Sátira de políticas, nunca de colectivos (docs/RESEARCH_SPAIN.md,
 // docs/PARTIES.md). Sin avisos de ficción: el aviso va solo en el arranque y en los créditos.
+//
+// IDIOMAS: este archivo es la base en español. Cada idioma sobrescribe textos por id en src/i18n/<lang>/data.js
+// (sección `phone`: apps, notifications, policies, poll, policyHeadline). Ids, `after`, `app` y `when` no se traducen.
+import { data, overrideById, overrideMap, formatDecimal } from '../i18n/index.js';
+const L = data('phone');
 
 const choice = (key, id) => state => state.campaignChoices?.[key] === id;
 const memory = id => state => !!state.memories?.[id];
 const job = (friend, name) => state => state.team?.[friend]?.job === name;
 
-export const APPS = {
+const BASE_APPS = {
   press: { label: 'El Eco del Barrio', icon: 'note', color: '#ff6b4f' },
   social: { label: 'unratito', icon: 'heart', color: '#a77bff' },
   group: { label: 'Esto va en serio', icon: 'chat', color: '#5cc46e' },
   neighbors: { label: 'Vecinos Portal 3', icon: 'home', color: '#ffb43a' },
 };
 
-export const notifications = [
+const BASE_NOTIFICATIONS = [
   // ---------------------------------------------------------------- antes de nada
   { id: 'start-news', after: null, app: 'press', from: 'El Eco del Barrio', title: 'Elecciones generales: el barrio vuelve a votar',
     text: 'Disueltas las Cortes. En el mercado se debate qué es peor: otra campaña o el precio de los huevos. Gana la campaña por poco.' },
@@ -138,7 +143,7 @@ export const notifications = [
 
 // Políticas que va anunciando cada rival. Ancladas en docs/RESEARCH_SPAIN.md (vivienda, turismo, sanidad,
 // precariedad, calor, coste de la vida, bulos). `after`: misión completada que las publica.
-export const rivalPolicies = {
+const BASE_POLICIES = {
   tech: [
     { id: 'tech-derogar', after: 'phone', topic: 'Programa', text: 'Derogar «todo lo anterior». Lo que pongan después se presentará en una fase posterior.' },
     { id: 'tech-rent', after: 'register', topic: 'Alquiler', text: 'Quitar los topes al alquiler para que «el mercado se tranquilice solo». Mientras se tranquiliza, una comisión.' },
@@ -166,9 +171,10 @@ export const rivalPolicies = {
 };
 
 // Cabecera de la notificación automática que acompaña a cada política rival.
-export const policyHeadline = (rival, policy) => `${rival.party} propone (${policy.topic.toLowerCase()})`;
+const baseHeadline = (rival, policy) => `${rival.party} propone (${policy.topic.toLowerCase()})`;
+export const policyHeadline = typeof L.policyHeadline === 'function' ? L.policyHeadline : baseHeadline;
 
-export const pollText = {
+const BASE_POLL = {
   pollster: 'Tu Primo Demoscopia',
   method: 'Encuesta del barrio: 400 entrevistas en la cola del pan. Margen de error: el que haga falta.',
   noParty: 'Aún no tienes partido registrado. En la cola del pan no te preguntan por ti.',
@@ -180,4 +186,12 @@ export const pollText = {
 function handle(name = '') { return name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); }
 function tag(party = '') { return party.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, ''); }
 function lower(text = '') { return text ? text.charAt(0).toLowerCase() + text.slice(1).replace(/\.$/, '') : ''; }
-export function fmt(n) { return (Math.round(n * 10) / 10).toFixed(1).replace('.', ','); }
+export function fmt(n) { return formatDecimal(n); }
+
+// ---------------------------------------------------------------- textos del idioma activo
+export const APPS = overrideMap(BASE_APPS, L.apps);
+export const notifications = overrideById(BASE_NOTIFICATIONS, L.notifications);
+export const rivalPolicies = Object.fromEntries(Object.entries(BASE_POLICIES).map(([role, list]) => [role, overrideById(list, L.policies)]));
+export const pollText = overrideMap(BASE_POLL, L.poll);
+/** Para pruebas: ids que puede sobrescribir src/i18n/<lang>/data.js (sección phone). */
+export const PHONE_TEXT_IDS = { apps: Object.keys(BASE_APPS), notifications: BASE_NOTIFICATIONS.map(n => n.id), policies: Object.values(BASE_POLICIES).flat().map(p => p.id), poll: Object.keys(BASE_POLL) };

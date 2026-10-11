@@ -1,8 +1,10 @@
 // Guion del juego. `script` es actual.js (base) con b.js («Sátira de argumentario») fusionado encima.
 // No hay selector: el texto se resuelve una sola vez, al cargar. Las ramas A y C están archivadas en
 // docs/dialogue-branches/archive/ y el juego no las usa.
+// Idiomas: encima va la capa del idioma activo (src/i18n/<lang>/script.js; en español no hay capa). Ver src/i18n/README.md.
 import actual from './actual.js';
 import b from './b.js';
+import { scriptLayer } from '../../i18n/index.js';
 
 const isPlain = v => !!v && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
 
@@ -15,12 +17,16 @@ export function deepMerge(base, over) {
   return out;
 }
 
-/** actual.js con una capa encima (por defecto b.js). buildScript(null) → actual.js sin capa. */
-export function buildScript(layer = b) {
-  return layer ? deepMerge(actual, layer) : actual;
+/** actual.js con una capa encima (por defecto b.js) y, opcionalmente, la capa de un idioma. buildScript(null) → actual.js sin capa. */
+export function buildScript(layer = b, languageLayer = null) {
+  const base = layer ? deepMerge(actual, layer) : actual;
+  return languageLayer ? deepMerge(base, languageLayer) : base;
 }
 
-export const script = buildScript();
+/** Guion fusionado de un idioma: actual + b + src/i18n/<lang>/script.js. */
+export const scriptFor = lang => buildScript(b, scriptLayer(lang));
+
+export const script = buildScript(b, scriptLayer());
 
 /** Resuelve un valor del guion: cadena tal cual, o función (state, ctx) con `rivals` siempre en ctx. */
 export const say = (value, state, ctx = {}) => typeof value === 'function' ? value(state, { rivals: script.rivals, ...ctx }) : value;

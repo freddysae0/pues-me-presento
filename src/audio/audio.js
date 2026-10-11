@@ -30,14 +30,14 @@ export class GameAudio {
   }
   // One "p" per revealed vowel, throttled so fast text speeds do not machine-gun.
   syllable(char, speaker, index, text = char) {
-    if (!this.settings.babble || !this.running() || !/[aeiouáéíóú]/i.test(char) || performance.now() - this.last < 90) return;
+    if (!this.settings.babble || !this.running() || !/[aeiouáéíóúàèìòùïüâêô]/i.test(char) || performance.now() - this.last < 90) return;
     this.last = performance.now();
     this.track(plosive(this.context, this.context.destination, this.settings.volume * VOICE, voiceFor(speaker), syllableShape(speaker, text, index)));
   }
   // Whole line shown at once (video call, toasts): a short burst of babble instead of per-letter.
   chatter(speaker, text) {
     if (!this.settings.babble || !this.running()) return; this.stop();
-    const vowels = [...text.matchAll(/[aeiouáéíóú]/gi)].slice(0, 14);
+    const vowels = [...text.matchAll(/[aeiouáéíóúàèìòùïüâêô]/gi)].slice(0, 14);
     vowels.forEach((m, i) => this.track(plosive(this.context, this.context.destination, this.settings.volume * VOICE, voiceFor(speaker), syllableShape(speaker, text, m.index + 1), i * 0.105)));
   }
   stop() { for (const n of this.nodes) { try { n.stop(); } catch {} } this.nodes.clear(); }

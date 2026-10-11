@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 await mkdir('artifacts', { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--enable-webgl', '--ignore-gpu-blocklist'] });
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: 'es-ES' }); // es-ES: the checks read Spanish text (src/i18n)
 const errors = [], externalRequests = [];
 page.on('pageerror', e => errors.push(e.message));
 page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });

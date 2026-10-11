@@ -3,6 +3,7 @@ import { panel, escapeHTML as esc, icon, choiceList, buttons } from './ui.js';
 import { effectSummary, headquartersScreen, videoScreen, crisisScreen, debateScreen, finalPrepScreen, finalSpeechScreen, victoryText, defeatReasons } from '../data/flow.js';
 import { recordMinigame } from '../state/minigames.js';
 import { script, say } from '../data/script/index.js';
+import { t } from '../i18n/index.js';
 import { runMinigame } from '../minigames/runner.js';
 import { ViralGame, RallyGame } from '../minigames/rhythm.js';
 import { DuelGame } from '../minigames/duel.js';
@@ -45,9 +46,9 @@ export function finalSpeech(game) {
 }
 export function results(game) {
   const f=electionForecast(game.state); game.state.result={score:f.score,won:f.winning};
-  const meter = `<div class="score-meter" style="--v:${Math.max(0, Math.min(100, f.score))}%"><i></i><em title="Umbral 48"></em><b><span>${f.score} / 100</span></b></div><div class="score-legend"><span>0</span><span>UMBRAL 48</span><span>100</span></div>`;
+  const meter = `<div class="score-meter" style="--v:${Math.max(0, Math.min(100, f.score))}%"><i></i><em title="${t('hud.threshold')}"></em><b><span>${f.score} / 100</span></b></div><div class="score-legend"><span>0</span><span>${t('results.scoreLegend')}</span><span>100</span></div>`;
   if (f.winning) {
-    game.complete('election').then(()=>game.playCinematic('victory', ()=>{ game.setMode('modal'); game.ui.show(panel(say(script.endings.victory.eyebrow, game.state), say(script.endings.victory.title, game.state),`<div class="big-medal">${icon('trophy')}</div><p><b>${esc(game.state.party.name)}</b> obtiene ${f.score} puntos electorales y supera el umbral de 48.</p>${meter}<p>${esc(victoryText(game.state))}</p>` + buttons([{ id: 'credits-win', kind: 'primary', icon: 'star', label: 'Ver créditos' }, { id: 'menu-win', icon: 'home', label: 'Menú' }]), '', { variant: 'win', icon: 'trophy' }), 'win'); game.ui.confetti(90); game.ui.on('credits-win',()=>game.credits()); game.ui.on('menu-win',()=>game.menu()); }));
+    game.complete('election').then(()=>game.playCinematic('victory', ()=>{ game.setMode('modal'); game.ui.show(panel(say(script.endings.victory.eyebrow, game.state), say(script.endings.victory.title, game.state),`<div class="big-medal">${icon('trophy')}</div><p>${t('results.victory', { party: esc(game.state.party.name), score: f.score })}</p>${meter}<p>${esc(victoryText(game.state))}</p>` + buttons([{ id: 'credits-win', kind: 'primary', icon: 'star', label: t('results.credits') }, { id: 'menu-win', icon: 'home', label: t('results.menu') }]), '', { variant: 'win', icon: 'trophy' }), 'win'); game.ui.confetti(90); game.ui.on('credits-win',()=>game.credits()); game.ui.on('menu-win',()=>game.menu()); }));
   } else {
     game.safeSave(); game.playCinematic('defeat', ()=>defeat(game, f, meter));
   }
@@ -55,6 +56,6 @@ export function results(game) {
 function defeat(game, f, meter) {
     game.setMode('modal');
     const reasons=defeatReasons(game.state,f.threshold);
-    game.ui.show(panel(say(script.endings.defeat.eyebrow, game.state), say(script.endings.defeat.title, game.state),`<div class="big-medal">${icon('chair')}</div><p>Resultado: <b>${f.score}/100</b>. Umbral: 48.</p>${meter}<ul class="reasons">${reasons.map((r, i) => `<li style="--i:${i};--c:var(--tomato)">${icon('close')}<span>${esc(r)}</span></li>`).join('')}</ul><p class="fine">El checkpoint vuelve a la crisis. Las tres decisiones posteriores permiten cambiar el resultado.</p>` + buttons([{ id: 'retry-election', kind: 'primary', icon: 'retry', label: 'Reintentar desde la crisis' }, { id: 'menu-loss', icon: 'home', label: 'Menú' }]), '', { variant: 'loss', icon: 'ballot' }), 'loss');
+    game.ui.show(panel(say(script.endings.defeat.eyebrow, game.state), say(script.endings.defeat.title, game.state),`<div class="big-medal">${icon('chair')}</div><p>${t('results.defeatScore', { score: f.score })}</p>${meter}<ul class="reasons">${reasons.map((r, i) => `<li style="--i:${i};--c:var(--tomato)">${icon('close')}<span>${esc(r)}</span></li>`).join('')}</ul><p class="fine">${t('results.defeatFine')}</p>` + buttons([{ id: 'retry-election', kind: 'primary', icon: 'retry', label: t('results.retry') }, { id: 'menu-loss', icon: 'home', label: t('results.menu') }]), '', { variant: 'loss', icon: 'ballot' }), 'loss');
     game.ui.on('retry-election',async()=>{ const restored=restoreCheckpoint(game.state); if(!restored)return; restored.checkpoint=structuredClone(restored); game.state=restored; game.safeSave(); await game.start(game.state); }); game.ui.on('menu-loss',()=>game.menu());
 }

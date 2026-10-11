@@ -14,7 +14,7 @@ html, body, #world { cursor: var(--cursor); }
   --ink: #2b2140; --ink-soft: #5b4f6e; --paper: #fff7e6; --paper-2: #f7e8c8; --paper-3: #efd9ad; --white: #fffdf7;
   --sun: #ffc83d; --sun-dark: #f0a91e; --tomato: #ff6b4f; --grass: #5cc46e; --grass-dark: #3f9e55; --sky: #58b8f0; --cork: #d9a66b;
   --c-support: #ff6584; --c-cred: #4fa8f5; --c-org: #ffb43a; --c-reach: #a77bff;
-  --display: 'Fredoka', 'Segoe UI Rounded', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --display: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', system-ui, sans-serif;
   --body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
   --line: 3px; --radius: 22px; --pop: cubic-bezier(.34, 1.56, .64, 1);
   --shadow: 0 6px 0 var(--ink); --shadow-soft: 0 18px 40px #2b214040;
@@ -128,6 +128,13 @@ h2 { font: 600 24px/1.1 var(--display); }
 .menu-actions .primary::after { content: ''; margin-left: auto; width: 12px; height: 12px; border-top: 4px solid var(--ink); border-right: 4px solid var(--ink); border-radius: 2px; transform: rotate(45deg); transition: transform .2s var(--pop); }
 .menu-actions .primary:hover::after { transform: translateX(5px) rotate(45deg); }
 .menu .fine { max-width: 440px; animation: rise-in .5s ease 1s both; }
+/* Selector de idioma del menú (nombres nativos; 9 opciones en un <select> nativo, cabe en cualquier ancho). */
+.lang-picker { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; font: 600 15px/1.2 var(--display); color: var(--ink); animation: rise-in .5s ease 1.05s both; }
+.lang-picker-label { display: inline-flex; align-items: center; gap: 6px; }
+.lang-picker-label .icon { width: 22px; height: 22px; }
+.lang-picker select { min-width: 150px; padding: 7px 34px 7px 14px; font: 600 15px/1.2 var(--display); color: var(--ink); background: var(--paper-2); border: var(--line) solid var(--ink); border-radius: 12px; appearance: none; cursor: var(--cursor-hover);
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: right 16px center, right 10px center; background-size: 6px 6px; background-repeat: no-repeat; }
+.lang-picker select:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 .menu-stamp { position: absolute; right: 6vw; bottom: 90px; width: 160px; height: 160px; display: grid; place-items: center; text-align: center;
   font: 700 17px/1.05 var(--display); letter-spacing: .06em; color: var(--ink); background: var(--sun); border: 4px solid var(--ink); border-radius: 50%;
   box-shadow: 0 7px 0 var(--ink), inset 0 0 0 8px var(--sun), inset 0 0 0 11px var(--ink); animation: stamp-in .6s var(--pop) 1.1s both, wobble 5s ease-in-out 2s infinite; }

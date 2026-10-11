@@ -1,5 +1,6 @@
 import { Vector3, Matrix } from '@babylonjs/core';
 import { escapeHTML, speakerColor, keycap, focusEntry } from '../ui/ui.js';
+import { t, speakerLabel } from '../i18n/index.js';
 export class Dialogue {
   constructor(game) { this.game = game; this.el = document.querySelector('#dialogue'); }
   start(lines, entity, onDone) {
@@ -9,13 +10,13 @@ export class Dialogue {
   showLine() {
     this.line = this.lines[this.index]; this.visible = 0; this.elapsed = 0; this.pause = 0; this.game.audio.stop();
     this.el.style.setProperty('--speaker', speakerColor(this.line.speaker));
-    this.el.innerHTML = `<div class="speaker">${escapeHTML(this.line.speaker)}<span class="offscreen"></span></div><div class="spoken"></div><div class="responses"></div><button class="dialogue-next">Completar ${keycap('Espacio')}</button>`;
+    this.el.innerHTML = `<div class="speaker">${escapeHTML(speakerLabel(this.line.speaker))}<span class="offscreen"></span></div><div class="spoken"></div><div class="responses"></div><button class="dialogue-next">${t('dialogue.complete', { key: keycap(t('keys.space')) })}</button>`;
     this.el.querySelector('.dialogue-next').onclick = () => this.next();
     this.el.querySelector('button').focus();
   }
   finishText() {
     this.visible = this.line.text.length; this.el.querySelector('.spoken').textContent = this.line.text; this.game.audio.stop();
-    const button = this.el.querySelector('.dialogue-next'); button.innerHTML = this.line.choices ? `Elige con ${keycap('1')}–${keycap(String(this.line.choices.length))}` : `Continuar ${keycap('Espacio')}`; button.disabled = !!this.line.choices;
+    const button = this.el.querySelector('.dialogue-next'); button.innerHTML = this.line.choices ? t('dialogue.choose', { from: keycap('1'), to: keycap(String(this.line.choices.length)) }) : t('dialogue.continue', { key: keycap(t('keys.space')) }); button.disabled = !!this.line.choices;
     if (this.line.choices) {
       const choices = this.el.querySelector('.responses');
       choices.innerHTML = this.line.choices.map((c, i) => `<button data-choice="${i}"><kbd>${i + 1}</kbd><span>${escapeHTML(c.text)}</span></button>`).join('');
@@ -56,7 +57,7 @@ export class Dialogue {
     this.el.style.left = `${left}px`;
     this.el.style.top = `${Math.max(100, Math.min(innerHeight - height - 55, offscreen ? innerHeight - height - 75 : y - height - 40))}px`;
     this.el.style.setProperty('--tail', `${Math.max(34, Math.min(width - 34, x - left))}px`); this.el.classList.toggle('no-tail', offscreen);
-    this.el.querySelector('.offscreen').textContent = offscreen ? 'fuera de cámara' : '';
+    this.el.querySelector('.offscreen').textContent = offscreen ? t('dialogue.offscreen') : '';
   }
   stop() { this.active = false; this.el.hidden = true; this.game.audio.stop(); }
 }

@@ -2,8 +2,9 @@
 // El texto viene del guion activo (src/data/script/, clave `flow` y `endings`); aquí quedan ids, orden y efectos.
 // Los ids, claves y efectos existentes se mantienen; las pruebas pulsan siempre la primera opción (#flow-0).
 import { script, say } from './script/index.js';
+import { t } from '../i18n/index.js';
 
-const STAT = { support: 'apoyo', credibility: 'credibilidad', organization: 'organización', reach: 'alcance' };
+const STAT = Object.fromEntries(['support', 'credibility', 'organization', 'reach'].map(k => [k, t(`stats.${k}`).toLocaleLowerCase()]));
 export const effectSummary = effect => Object.entries(effect).filter(([, v]) => v).map(([k, v]) => `${v > 0 ? '+' : '−'}${Math.abs(v)} ${STAT[k]}`).join(', ');
 const choice = (key, id, title, flavor, effect) => ({ key, id, title, detail: `${flavor} · ${effectSummary(effect)}.`, effect });
 

@@ -9,6 +9,7 @@ import { feed, feedHint } from '../data/feed.js';
 import { feedArt } from './feedArt.js';
 import { FeedLoop } from '../audio/feedLoops.js';
 import { escapeHTML as esc, icon } from './ui.js';
+import { t } from '../i18n/index.js';
 import './phone.css';
 
 const SHARE = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.4 4.2l7.4 7-7.4 7v-4.1C8.6 14 5.6 15.6 3.2 19.4 4 13.6 7.2 9.4 13.4 8.4z"/></svg>';
@@ -20,7 +21,7 @@ const slideHTML = (item, i) => {
   const newsTop = item.news ? `<div class="news-head"><span class="tag news-tag">${esc(item.tag)}</span><h1>${item.title.map(esc).join('<br>')}</h1><p>${esc(item.body)}</p></div>` : '';
   const cta = item.news ? `<div class="news-cta"><p>${esc(item.aside)}</p><button class="primary" id="idea" disabled>${icon('sparkle')}<span>${esc(item.cta)}</span></button></div>` : '';
   const hint = i === 0 ? `<div class="swipe-hint" aria-hidden="true"><span class="swipe-hand">${icon('arrow')}</span><b>${esc(feedHint.swipe)}</b><small>${esc(feedHint.keys)}</small></div>` : '';
-  return `<article class="feed-slide${item.news ? ' is-news' : ''}" data-video="${item.id}" style="--i:${i}" role="group" aria-roledescription="vídeo" aria-label="Vídeo ${i + 1} de ${feed.length}: @${esc(item.user)}" inert aria-hidden="true">
+  return `<article class="feed-slide${item.news ? ' is-news' : ''}" data-video="${item.id}" style="--i:${i}" role="group" aria-roledescription="${esc(t('feed.videoRole'))}" aria-label="${esc(t('feed.videoLabel', { n: i + 1, total: feed.length, user: item.user }))}" inert aria-hidden="true">
     ${feedArt(item)}<div class="feed-shade" aria-hidden="true"></div>${newsTop}
     <div class="feed-rail" aria-hidden="true"><span class="rail-avatar" style="--c:${item.avatar}">${esc(item.user[0].toUpperCase())}<i>+</i></span><span class="rail-like">${icon('heart')}<b>${esc(item.likes)}</b></span><span>${icon('chat')}<b>${esc(item.comments)}</b></span><span>${SHARE}<b>${esc(item.shares)}</b></span><span class="rail-disc" style="--c:${item.avatar}"></span></div>
     <div class="feed-meta"><b class="feed-user">@${esc(item.user)}</b><p class="feed-caption">${esc(item.caption)} ${tags}</p><p class="feed-sound">${NOTE}<span><span class="marquee">${esc(item.sound)} · ${esc(item.sound)} · </span></span></p></div>
@@ -28,8 +29,8 @@ const slideHTML = (item, i) => {
 };
 
 export function feedMarkup() {
-  return `<section class="phone-shell phone-feed" aria-label="Móvil: unratito"><div class="phone-top"><b>unratito</b><span class="phone-tabs"><small>Siguiendo</small><small class="on">Para ti</small></span></div>
-    <div class="feed" tabindex="0" role="region" aria-roledescription="feed de vídeos" aria-label="Vídeos de unratito. Desliza, usa la rueda o la flecha abajo para ver el siguiente." data-index="0">
+  return `<section class="phone-shell phone-feed" aria-label="${esc(t('feed.shellLabel'))}"><div class="phone-top"><b>unratito</b><span class="phone-tabs"><small>${t('feed.following')}</small><small class="on">${t('feed.forYou')}</small></span></div>
+    <div class="feed" tabindex="0" role="region" aria-roledescription="${esc(t('feed.feedRole'))}" aria-label="${esc(t('feed.feedLabel'))}" data-index="0">
       <div class="feed-track">${feed.map(slideHTML).join('')}</div></div>
     <p class="sr feed-live" aria-live="polite"></p></section>`;
 }
@@ -52,7 +53,7 @@ export function mountFeed(game) {
     slides.forEach((s, i) => { const on = i === index; s.classList.toggle('active', on); s.inert = !on; s.setAttribute('aria-hidden', String(!on)); s.style.setProperty('--p', 0); });
     viewport.dataset.index = index; viewport.scrollTop = 0;
     if (index > 0) root.querySelector('.swipe-hint')?.classList.add('gone');
-    const item = feed[index]; live.textContent = `Vídeo ${index + 1} de ${feed.length}. @${item.user}. ${item.alt}`;
+    const item = feed[index]; live.textContent = t('feed.live', { n: index + 1, total: feed.length, user: item.user, alt: item.alt });
     sound.play(item.loop);
     if (item.news) { idea.disabled = false; idea.focus({ preventScroll: true }); }
   };

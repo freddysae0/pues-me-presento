@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 await mkdir('artifacts', { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--enable-webgl', '--ignore-gpu-blocklist'] });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: 'es-ES' }); // es-ES: the checks read Spanish text (src/i18n)
 const errors = [];
 page.on('pageerror', e => errors.push(e.message));
 page.on('console', m => { if (m.type() === 'error' || (m.type() === 'warning' && /AudioContext|autoplay/i.test(m.text()))) errors.push(m.text()); });

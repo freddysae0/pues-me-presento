@@ -6,6 +6,7 @@ import { Actors, stageCamera } from '../cinema/director.js';
 import { duelRounds } from '../data/minigames.js';
 import { duelBonus } from '../state/minigames.js';
 import { script, say } from '../data/script/index.js';
+import { t } from '../i18n/index.js';
 
 const T = script.minigames.duel;
 
@@ -21,7 +22,7 @@ export class DuelGame {
     this.game = game; this.id = 'duel'; this.actors = new Actors(game); this.rounds = duelRounds(game.state);
     this.eyebrow = say(T.eyebrow, game.state); this.title = countTitle(say(T.title, game.state), this.rounds.length);
     this.intro = say(T.intro, game.state, { rounds: esc(this.rounds.length) });
-    this.howto = [[`${keycap('1')}${keycap('2')}${keycap('3')}`, 'responder'], [keycap('Espacio'), 'pedir la palabra cuando te interrumpen'], [icon('credibility'), 'rápido y concreto = más credibilidad']];
+    this.howto = [[`${keycap('1')}${keycap('2')}${keycap('3')}`, t('duel.howtoAnswer')], [keycap(t('keys.space')), t('duel.howtoFloor')], [icon('credibility'), t('duel.howtoFast')]];
   }
   stage() {
     const p = this.game.player; p.body.position.set(-0.4, 0.57, 3.9); p.character.root.position.copyFrom(p.body.position); p.character.root.rotation.y = Math.PI;
@@ -34,8 +35,8 @@ export class DuelGame {
     this.actors.clear(); // mount() opens the first round on the fresh HUD
   }
   hud() {
-    return `<div class="mg-top"><span class="chip-big duel-round"></span><span class="chip-big">${icon('credibility')}<b class="duel-points">0</b> puntos</span><button class="secondary small" id="mg-skip-play">Saltar ${keycap('X')}</button></div>
-<div class="mg-bottom panel duel-panel"><span class="eyebrow">${icon('mic')}<span class="duel-topic"></span></span><p class="duel-claim"></p>${meterBar(1, { label: 'TIEMPO', color: 'var(--sun)', id: 'duel-timer' })}<p class="duel-interrupt" hidden>${icon('chat')}<span>¡Te interrumpen! Pulsa ${keycap('Espacio')} para pedir la palabra.</span></p><div class="duel-options"></div><p class="fine">${keycap('R')} repetir debate · ${keycap('X')} saltar sin bonus · ${keycap('Esc')} pausa</p></div>`;
+    return `<div class="mg-top"><span class="chip-big duel-round"></span><span class="chip-big">${icon('credibility')}<b class="duel-points">0</b> ${t('duel.points')}</span><button class="secondary small" id="mg-skip-play">${t('minigame.skip', { key: keycap('X') })}</button></div>
+<div class="mg-bottom panel duel-panel"><span class="eyebrow">${icon('mic')}<span class="duel-topic"></span></span><p class="duel-claim"></p>${meterBar(1, { label: t('minigame.time'), color: 'var(--sun)', id: 'duel-timer' })}<p class="duel-interrupt" hidden>${icon('chat')}<span>${t('duel.interrupt', { key: keycap(t('keys.space')) })}</span></p><div class="duel-options"></div><p class="fine">${t('duel.keys', { r: keycap('R'), x: keycap('X'), esc: keycap('Esc') })}</p></div>`;
   }
   mount(root) {
     this.root = root; this.timer = root.querySelector('#duel-timer'); this.claim = root.querySelector('.duel-claim'); this.options = root.querySelector('.duel-options');
@@ -46,8 +47,8 @@ export class DuelGame {
     if (this.round >= this.rounds.length) { this.done = true; return; }
     const r = this.rounds[this.round];
     Object.assign(this, { phase: 'ask', clock: 0, interrupted: false, interruptLeft: 0, interruptedOnce: false, picked: null });
-    this.root.querySelector('.duel-round').textContent = `RÉPLICA ${this.round + 1} / ${this.rounds.length}`;
-    this.root.querySelector('.duel-topic').textContent = r.topic.toUpperCase();
+    this.root.querySelector('.duel-round').textContent = t('duel.round', { n: this.round + 1, total: this.rounds.length });
+    this.root.querySelector('.duel-topic').textContent = r.topic.toLocaleUpperCase();
     this.claim.innerHTML = `<b style="color:var(--tomato)">${esc(r.speaker)}:</b> ${esc(r.claim)}`;
     this.options.innerHTML = choiceList(r.options.map((o, i) => ({ id: `duel-${i}`, title: o })));
     this.options.querySelectorAll('button').forEach((b, i) => { b.disabled = true; b.tabIndex = -1; b.onclick = () => this.answer(i); });
@@ -106,7 +107,7 @@ export class DuelGame {
   result() {
     const max = this.rounds.length * 2, bonus = duelBonus({ points: this.points, max, correct: this.correct, rounds: this.rounds.length });
     return {
-      score: this.points, bonus, great: this.correct === this.rounds.length, badge: `${this.correct}/${this.rounds.length} réplicas concretas · ${this.points}/${max} puntos`,
+      score: this.points, bonus, great: this.correct === this.rounds.length, badge: t('duel.badge', { correct: this.correct, total: this.rounds.length, points: this.points, max }),
       title: say(this.correct === this.rounds.length ? T.titles.all : this.correct >= Math.ceil(this.rounds.length / 2) ? T.titles.mid : T.titles.low, this.game.state),
       text: say(T.text, this.game.state),
     };

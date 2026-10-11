@@ -28,7 +28,7 @@ const hold = async (page, key, ms) => { await page.keyboard.down(key); await pag
 const profile = await mkdtemp(path.join(tmpdir(), 'pmp-desktop-')); // throwaway user data, never the real saves
 await mkdir('artifacts', { recursive: true });
 const launch = async () => {
-  const app = await electron.launch({ args: ['.', `--user-data-dir=${profile}`] });
+  const app = await electron.launch({ args: ['.', `--user-data-dir=${profile}`, '--lang=es-ES'] });
   const page = await app.firstWindow(); const errors = [];
   page.on('pageerror', e => errors.push(e.message)); page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   await page.locator('#notice-enter').waitFor({ timeout: 60000 }); // start-up notice, every launch: entered with the keyboard

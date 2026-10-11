@@ -7,6 +7,7 @@ import { Actors } from '../cinema/director.js';
 import { CHAIRS } from '../data/minigames.js';
 import { chairsBonus } from '../state/minigames.js';
 import { script, say } from '../data/script/index.js';
+import { t } from '../i18n/index.js';
 
 const T = script.minigames.chairs;
 
@@ -17,7 +18,7 @@ export class ChairsGame {
     this.game = game; this.id = 'chairs'; this.movement = true; this.actors = new Actors(game); this.meshes = [];
     this.eyebrow = say(T.eyebrow, game.state); this.title = say(T.title, game.state);
     this.intro = say(T.intro, game.state, { time: CHAIRS.time });
-    this.howto = [[`${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')}`, 'moverte · ratón para mirar'], [keycap('⇧'), 'correr'], [icon('organization'), 'cada silla suma organización']];
+    this.howto = [[`${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')}`, t('chairs.howtoMove')], [keycap('⇧'), t('chairs.howtoRun')], [icon('organization'), t('chairs.howtoChair')]];
     this.ready = SceneLoader.LoadAssetContainerAsync('./assets/', 'prop_folding_chair_01.glb', game.world.scene).then(c => { if (this.disposed) c.dispose(); else this.container = c; }).catch(() => { this.container = null; });
   }
   stage() {
@@ -64,8 +65,8 @@ export class ChairsGame {
   }
   clearChairs() { for (const c of this.chairs || []) { c.root.dispose(); c.arrow.dispose(); this.meshes = this.meshes.filter(m => m !== c.arrow); } this.chairs = []; }
   hud() {
-    return `<div class="mg-top"><div class="panel chairs-card"><span class="eyebrow">${icon('chair')}SEIS SILLAS</span><div class="chairs-row">${CHAIRS.spots.map((_, i) => `<i data-chair="${i}">${icon('chair')}</i>`).join('')}</div>${meterBar(1, { label: 'TIEMPO', color: 'var(--sun)', id: 'chairs-time' })}<p class="fine chairs-hint">${esc(say(T.hints.start, this.game.state))}</p></div><button class="secondary small" id="mg-skip-play">Saltar ${keycap('X')}</button></div>
-<div class="mg-keys">${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')} mover · ${keycap('⇧')} correr · ${keycap('R')} repetir · ${keycap('X')} saltar · ${keycap('Esc')} pausa</div>`;
+    return `<div class="mg-top"><div class="panel chairs-card"><span class="eyebrow">${icon('chair')}${t('chairs.title')}</span><div class="chairs-row">${CHAIRS.spots.map((_, i) => `<i data-chair="${i}">${icon('chair')}</i>`).join('')}</div>${meterBar(1, { label: t('minigame.time'), color: 'var(--sun)', id: 'chairs-time' })}<p class="fine chairs-hint">${esc(say(T.hints.start, this.game.state))}</p></div><button class="secondary small" id="mg-skip-play">${t('minigame.skip', { key: keycap('X') })}</button></div>
+<div class="mg-keys">${t('chairs.keys', { wasd: keycap('W') + keycap('A') + keycap('S') + keycap('D'), shift: keycap('⇧'), r: keycap('R'), x: keycap('X'), esc: keycap('Esc') })}</div>`;
   }
   mount(root) { this.root = root; this.timeEl = root.querySelector('#chairs-time'); this.hint = root.querySelector('.chairs-hint'); }
   update(dt) {
@@ -98,7 +99,7 @@ export class ChairsGame {
   result() {
     const bonus = chairsBonus({ delivered: this.delivered, total: CHAIRS.spots.length, timeLeft: this.time }), all = this.delivered === CHAIRS.spots.length;
     return {
-      score: this.delivered, bonus, great: all, badge: `${this.delivered}/${CHAIRS.spots.length} sillas · ${Math.ceil(this.time)} s de margen`,
+      score: this.delivered, bonus, great: all, badge: t('chairs.badge', { n: this.delivered, total: CHAIRS.spots.length, s: Math.ceil(this.time) }),
       title: say(all ? T.titles.all : this.delivered >= 3 ? T.titles.mid : T.titles.low, this.game.state),
       text: say(all ? T.texts.all : T.texts.other, this.game.state),
     };

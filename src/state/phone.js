@@ -6,8 +6,9 @@ import { MEMORY_EFFECTS } from '../data/dialogues.js';
 import { headquartersScreen, videoScreen, crisisScreen, debateScreen, finalPrepScreen, finalSpeechScreen } from '../data/flow.js';
 import { script } from '../data/script/index.js';
 import { debateCast } from '../data/parties.js';
-import { notifications, rivalPolicies, policyHeadline, APPS } from '../data/phoneNews.js';
+import { notifications, rivalPolicies, policyHeadline, APPS, pollText } from '../data/phoneNews.js';
 import { electionForecast } from './campaign.js';
+import { t } from '../i18n/index.js';
 
 const STATS = ['support', 'credibility', 'reach', 'organization'];
 export const RIVAL_ROLES = ['tech', 'populist', 'hard'];
@@ -21,12 +22,12 @@ const resolve = (v, state, ctx) => (typeof v === 'function' ? v(state, ctx) : v)
 
 // Pantallas de decisión por misión: clave en state.campaignChoices, pantalla (para recuperar efecto y título) y minijuego.
 const FLOW = {
-  hqBrief: { key: 'hq', label: 'Prioridad en la sede', screen: headquartersScreen },
-  video: { key: 'video', label: 'Vídeo de campaña', screen: videoScreen, minigame: 'viral' },
-  crisis: { key: 'crisis', label: 'Gestión de la crisis', screen: crisisScreen },
-  debate: { key: 'debate', label: 'Debate', screen: debateScreen, minigame: 'duel' },
-  finalPrep: { key: 'prep', label: 'Última vuelta', screen: finalPrepScreen, minigame: 'chairs' },
-  finalSpeech: { key: 'final', label: 'Mitin final', screen: finalSpeechScreen, minigame: 'rally' },
+  hqBrief: { key: 'hq', label: t('phone.decisions.hqBrief'), screen: headquartersScreen },
+  video: { key: 'video', label: t('phone.decisions.video'), screen: videoScreen, minigame: 'viral' },
+  crisis: { key: 'crisis', label: t('phone.decisions.crisis'), screen: crisisScreen },
+  debate: { key: 'debate', label: t('phone.decisions.debate'), screen: debateScreen, minigame: 'duel' },
+  finalPrep: { key: 'prep', label: t('phone.decisions.finalPrep'), screen: finalPrepScreen, minigame: 'chairs' },
+  finalSpeech: { key: 'final', label: t('phone.decisions.finalSpeech'), screen: finalSpeechScreen, minigame: 'rally' },
 };
 function flowChoice(state, mission) {
   const f = FLOW[mission], id = f && state.campaignChoices?.[f.key];
@@ -92,7 +93,7 @@ export function pollFor(state) {
   const rows = [
     ...(hasParty ? [{ id: 'player', name: party.name, party: party.name, color: party.color, share: p, player: true }] : []),
     ...cast.map(c => ({ id: c.role, name: c.name, party: c.party, color: c.color, share: shares[c.role] })),
-    { id: 'undecided', name: 'Indecisos', party: 'Indecisos', color: '#b9aecb', share: shares.undecided },
+    { id: 'undecided', name: pollText.undecided, party: pollText.undecided, color: '#b9aecb', share: shares.undecided },
   ];
   const leader = rows.find(r => r.id === lead.role);
   return { rows, player: rows.find(r => r.player) || null, leader, threshold, winning, score: f.score, hasParty };
@@ -133,7 +134,7 @@ export function pollWithTrend(state) {
 
 // ---------------------------------------------------------------- notificaciones
 function context(state) {
-  return { rivals: script.rivals, party: state.party?.name || 'tu partido', proposal: proposals.find(p => p.id === state.proposal) || null, poll: pollFor(state) };
+  return { rivals: script.rivals, party: state.party?.name || t('phone.yourPartyFallback'), proposal: proposals.find(p => p.id === state.proposal) || null, poll: pollFor(state) };
 }
 
 /** Notificaciones desbloqueadas, de la más antigua a la más reciente (orden de misión, luego orden de datos). */

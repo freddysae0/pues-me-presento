@@ -3,7 +3,8 @@
 // Los guionistas pueden ejecutarlo con: npm.cmd test
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildScript, deepMerge, script as active, say } from '../src/data/script/index.js';
+import { buildScript, deepMerge, script as active, say, scriptFor } from '../src/data/script/index.js';
+import { LANGS } from '../src/i18n/index.js';
 import actual from '../src/data/script/actual.js';
 import b from '../src/data/script/b.js';
 import { MEMORY_EFFECTS, dialogues, aftermathLines, sideTalk } from '../src/data/dialogues.js';
@@ -90,7 +91,9 @@ test('el guion efectivo (actual + B) alimenta los datos del juego con los mismos
   assert.deepEqual(normalizeReactions({ right: 'r', wrong: 'x', timeout: 't' }), { right: 'r', wrong: 'x', timeout: 't' });
 });
 
-for (const [label, build] of [['actual.js (base)', () => buildScript(null)], ['efectivo (actual + B)', () => active]]) {
+// Además del español, el guion fusionado de cada idioma (actual + B + src/i18n/<lang>/script.js) cumple el mismo esquema.
+const LANGUAGE_SCRIPTS = LANGS.filter(l => l !== 'es').map(l => [`idioma ${l} (actual + B + i18n/${l}/script.js)`, () => scriptFor(l), l]);
+for (const [label, build, lang = 'es'] of [['actual.js (base)', () => buildScript(null)], ['efectivo (actual + B)', () => active], ...LANGUAGE_SCRIPTS]) {
   test(`guion ${label} cumple el esquema`, () => {
     const script = build(), states = samples(), ctxs = ctxVariants(script);
     const D = script.dialogues;
@@ -115,7 +118,8 @@ for (const [label, build] of [['actual.js (base)', () => buildScript(null)], ['e
 
     // Misiones: todas, y con las cadenas que buscan las pruebas.
     for (const m of missions) assert.ok(script.missions[m.id]?.title?.trim() && script.missions[m.id]?.objective?.trim(), `missions.${m.id}`);
-    for (const [m, needle] of Object.entries(MISSION_TITLE_NEEDS)) assert.ok(script.missions[m].title.includes(needle), `missions.${m}.title debe contener «${needle}»`);
+    // Las pruebas de navegador buscan estas cadenas en español; en otros idiomas el título es libre.
+    if (lang === 'es') for (const [m, needle] of Object.entries(MISSION_TITLE_NEEDS)) assert.ok(script.missions[m].title.includes(needle), `missions.${m}.title debe contener «${needle}»`);
     assert.equal(script.chapters.length, 6, 'chapters: 6 títulos');
 
     // Propuestas, amigos, discurso.

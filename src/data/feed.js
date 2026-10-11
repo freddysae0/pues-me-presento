@@ -14,14 +14,18 @@
 //   alt       descripción para lectores de pantalla
 // La noticia (news: true) va SIEMPRE la última: no se puede pasar de ella y su botón completa la misión.
 // Texto pensado para el humor del juego: referencias españolas, sin marcas reales.
+// IDIOMAS: base en español; cada idioma sobrescribe por id en src/i18n/<lang>/data.js, sección `feed`:
+// { hint: { swipe, keys, end }, videos: { <id>: { caption, tags, sound, sticker, likes, comments, shares, alt, tag, title, body, aside, cta } } }.
+// No se traducen id, art, loop, duration, avatar ni news.
+import { data, overrideById, overrideMap } from '../i18n/index.js';
 
-export const feedHint = {
+const BASE_HINT = {
   swipe: 'Desliza',
   keys: 'Rueda, arrastrar, S o Espacio',
   end: 'No hay más vídeos. Solo esto.',
 };
 
-export const feed = [
+const BASE_FEED = [
   {
     id: 'trend',
     art: 'dance',
@@ -91,3 +95,9 @@ export const feed = [
     alt: 'Noticia de última hora: el edificio del Congreso con una urna a la que caen sobres. El Gobierno disuelve las Cortes y convoca elecciones generales.',
   },
 ];
+
+const L = data('feed');
+export const feedHint = overrideMap(BASE_HINT, L.hint);
+export const feed = overrideById(BASE_FEED, L.videos);
+/** Para pruebas: ids de vídeo que puede sobrescribir un idioma. */
+export const FEED_IDS = BASE_FEED.map(v => v.id);

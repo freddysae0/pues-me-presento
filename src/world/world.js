@@ -1,15 +1,16 @@
 import { Scene, Color3, Color4, Vector3, HemisphericLight, DirectionalLight, ShadowGenerator, MeshBuilder, Mesh, VertexBuffer, StandardMaterial, PBRMaterial, DynamicTexture, TransformNode, SceneLoader } from '@babylonjs/core';
 import '@babylonjs/loaders/glTF';
 import { createCharacter, characterModel } from '../npc/character.js';
+import { t } from '../i18n/index.js';
 
 const ASSET_DIR = './assets/';
 const H = Math.PI / 2, P = Math.PI; // rotations: models face +Z; P faces -Z, H faces +X, -H faces -X
-// Text drawn into GLB materials named MAT_label_<key>; [text, background, ink, width, height].
+// Text drawn into GLB materials named MAT_label_<key>; [text, background, ink, width, height]. Texts: src/i18n (world.labels).
 const LABELS = {
-  party_name: ['PUES ME PRESENTO', '#f4ead2', '#2d4a43', 1024, 256], party_slogan: ['Una cosa bien hecha.', '#f4ead2', '#2d4a43', 1024, 160],
-  rival_name: ['OTROS DE SIEMPRE', '#f4ead2', '#8b2c22', 512, 256], laptop: ['EL GRUPO', '#20343a', '#9fe0cf', 512, 320],
-  phone: ['#ELECCIONES', '#18242a', '#f2d36b', 256, 480], results: ['RECUENTO', '#162a33', '#f4ead2', 1024, 600],
-  name: ['CANDIDATURA', '#f4ead2', '#2d2d2d', 512, 128], tv: ['NOTICIAS DEL BARRIO', '#13202a', '#9cc8e4', 512, 288],
+  party_name: [t('world.labels.party_name'), '#f4ead2', '#2d4a43', 1024, 256], party_slogan: [t('world.labels.party_slogan'), '#f4ead2', '#2d4a43', 1024, 160],
+  rival_name: [t('world.labels.rival_name'), '#f4ead2', '#8b2c22', 512, 256], laptop: [t('world.labels.laptop'), '#20343a', '#9fe0cf', 512, 320],
+  phone: [t('world.labels.phone'), '#18242a', '#f2d36b', 256, 480], results: [t('world.labels.results'), '#162a33', '#f4ead2', 1024, 600],
+  name: [t('world.labels.name'), '#f4ead2', '#2d2d2d', 512, 128], tv: [t('world.labels.tv'), '#13202a', '#9cc8e4', 512, 288],
 };
 
 export class World {
@@ -82,7 +83,7 @@ export class World {
     this.place('prop_mug_01', -3.95, 0.85, { y: 0.45 }); this.place('prop_pizza_box_01', -1.6, 3.5, { rot: 0.35 });
     this.place('prop_tv_stand_01', -6.6, 0.95, { rot: H, collider: true }); this.place('prop_tv_01', -6.6, 0.95, { rot: H, y: 0.46 });
     this.place('prop_floor_lamp_01', -5.85, 3.75);
-    this.entity('phone', 'Móvil · Un vídeo más', [-3.3, 0, 0.65]);
+    this.entity('phone', t('world.prompts.phone'), [-3.3, 0, 0.65]);
     // Kitchen corner
     this.place('prop_kitchen_counter_01', -6.62, -4.6, { rot: H, collider: true }); this.place('prop_coffee_maker_01', -6.55, -5.05, { rot: H, y: 0.93 });
     this.place('prop_fridge_01', -6.6, -2.95, { rot: H, collider: true });
@@ -90,10 +91,10 @@ export class World {
     this.place('prop_desk_01', 3.5, 3.8, { rot: P, collider: [2.4, 0.8, 1.0] }); this.place('prop_folder_01', 4.35, 3.55, { rot: P + 0.2, y: 0.78 });
     this.place('prop_chair_desk_01', 5.6, 3.05, { rot: 2.6 }); this.place('prop_bookshelf_01', 6.8, 1.2, { rot: -H, collider: true });
     this.place('prop_laundry_pile_01', 5.3, -1.7, { rot: 0.4 });
-    this.entity('laptop', 'Portátil · Llamar a los amigos', [2.75, 0, 2.9]);
-    this.entity('folder', 'Carpeta · Fundar el partido', [4.65, 0, 2.9]);
+    this.entity('laptop', t('world.prompts.laptop'), [2.75, 0, 2.9]);
+    this.entity('folder', t('world.prompts.folder'), [4.65, 0, 2.9]);
     // Walls and door
-    this.place('prop_door_01', 0, 5.84, { rot: P, scale: 1.15 }); this.label('A LA CALLE', [0, 3.2, 5.69], 1.6, 0.4); this.exit('door', 'Salir a la plaza', [0, 0, 4.8], 0, 'PLAZA');
+    this.place('prop_door_01', 0, 5.84, { rot: P, scale: 1.15 }); this.label(t('world.signs.toStreet'), [0, 3.2, 5.69], 1.6, 0.4); this.exit('door', t('world.prompts.door'), [0, 0, 4.8], 0, t('world.posts.plaza'));
     this.place('prop_coat_rack_01', -1.45, 5.45);
     this.place('prop_curtain_01', -3.8, 5.84, { rot: P, y: 2.1, scale: 1.2 }); this.place('prop_wall_clock_01', 1.9, 5.84, { rot: P, y: 2.75 });
     this.place('prop_poster_flat_01', 3.7, 5.84, { rot: P, y: 2.15, scale: 1.6 });
@@ -120,15 +121,15 @@ export class World {
     this.place('prop_campaign_backdrop_01', 0, 10.7, { rot: P, collider: [6.2, 3.1, 0.4] });
     for (const x of [-3.4, 3.4]) this.place('prop_flag_blank_01', x, 10.1, { rot: P });
     this.place('env_bush_long_01', 4.8, 11.2, { collider: true }); this.place('env_bush_long_01', -3.35, 11.6, { rot: H, collider: true }); // left one hugs the bakery's side
-    this.place('prop_podium_01', 0, 7.35, { rot: P, collider: [0.9, 1.2, 0.65] }); this.entity('podium', 'Atril · Tu primer discurso', [0, 0, 8]);
+    this.place('prop_podium_01', 0, 7.35, { rot: P, collider: [0.9, 1.2, 0.65] }); this.entity('podium', t('world.prompts.podium'), [0, 0, 8]);
     this.place('prop_fountain_01', 0, 13.6, { collider: [2.6, 1.2, 2.6] });
     for (const x of [-3.4, 3.4]) { this.place('env_tree_young_01', x, 13.4, { collider: [0.4, 3, 0.4] }); this.place('env_plaza_tree_pit_01', x, 13.4); }
     // Programme board and final map
-    this.place('prop_noticeboard_01', -6, -3.5, { rot: P, collider: [1.5, 2.1, 0.35] }); this.entity('board', 'Tablón · Elegir una propuesta', [-6, 0, -4.3]);
-    this.place('prop_finalboard_map_01', -7.7, -3.5, { rot: P, collider: [1.5, 2.1, 0.35] }); this.entity('finalBoard', 'Mapa · Último esfuerzo', [-6, 0, -4.3]);
+    this.place('prop_noticeboard_01', -6, -3.5, { rot: P, collider: [1.5, 2.1, 0.35] }); this.entity('board', t('world.prompts.board'), [-6, 0, -4.3]);
+    this.place('prop_finalboard_map_01', -7.7, -3.5, { rot: P, collider: [1.5, 2.1, 0.35] }); this.entity('finalBoard', t('world.prompts.finalBoard'), [-6, 0, -4.3]);
     // Video mark
     this.place('prop_camera_mark_01', 5.5, 6, { y: 0.012 }); this.place('prop_tripod_phone_01', 5.5, 4.5);
-    this.entity('cameraSpot', 'Marca · Grabar vídeo', [5.5, 0, 6]);
+    this.entity('cameraSpot', t('world.prompts.cameraSpot'), [5.5, 0, 6]);
     // Bar terrace (Paco)
     for (const z of [-6.4, 3.3]) {
       this.place('prop_terrace_table_01', 7.5, z, { collider: [0.9, 0.85, 0.9] }); this.place('prop_parasol_01', 7.5, z, { y: 0.05 });
@@ -140,9 +141,9 @@ export class World {
     for (const [x, z] of [[-7.5, 7.6], [-7.5, -6.6], [7.6, -4.6], [7.6, 8.0]]) this.place('prop_streetlamp_01', x, z, { rot: x > 0 ? -H : H, collider: [0.3, 3.8, 0.3] });
     this.place('prop_bus_stop_01', -7.7, -10.6, { rot: H, collider: true });
     // Walkable exits: the sede is the ground floor of the portal beside the bar; the 27 stops at the bus shelter.
-    this.label('SEDE DE CAMPAÑA', [8.86, 3.2, -7.95], 1.7, 0.36).rotation.y = H;
-    this.exit('sedeDoor', 'Portal · Sede de campaña', [7.95, 0, -7.95], H, 'SEDE');
-    this.exit('busStop', 'Parada · Línea 27', [-6.45, 0, -11.2], -H, 'BUS 27'); this.place('env_bush_round_01', -5.7, -9.4, { collider: true });
+    this.label(t('world.signs.hq'), [8.86, 3.2, -7.95], 1.7, 0.36).rotation.y = H;
+    this.exit('sedeDoor', t('world.prompts.sedeDoor'), [7.95, 0, -7.95], H, t('world.posts.hq'));
+    this.exit('busStop', t('world.prompts.busStop'), [-6.45, 0, -11.2], -H, t('world.posts.bus')); this.place('env_bush_round_01', -5.7, -9.4, { collider: true });
     this.place('prop_kiosk_01', -6.0, -13.4, { collider: true }); this.place('prop_car_01', -3.0, -13.9, { rot: H, collider: true });
     for (const x of [0.2, 2.4]) this.place('prop_work_fence_01', x, -14.1);
     this.place('prop_recycling_01', 5.0, -13.7, { collider: true }); this.place('prop_van_01', 0, -17.5, { rot: H });
@@ -172,14 +173,14 @@ export class World {
   hq() {
     this.roomBase('#efdcb9');
     this.place('prop_door_01', 0, -7.84, { scale: 1.15 });
-    this.label('A LA CALLE', [0, 3.25, -7.69], 1.6, 0.4).rotation.y = P; this.exit('hqDoor', 'Puerta · Salir a la calle', [0, 0, -6.75], P, 'CALLE');
+    this.label(t('world.signs.toStreet'), [0, 3.25, -7.69], 1.6, 0.4).rotation.y = P; this.exit('hqDoor', t('world.prompts.hqDoor'), [0, 0, -6.75], P, t('world.posts.street'));
     // Campaign table where the team meets
     this.place('prop_planning_table_01', 0, 1.0, { rot: P }); this.collider('planning-table', [3.7, 0.8, 1.05], [0, 0.4, 1.0]);
     this.place('prop_pizza_box_01', 1.1, 1.15, { y: 0.75, rot: 0.3 }); this.place('prop_laptop_01', -1.1, 1.0, { y: 0.75, rot: P + 0.3 }); this.place('prop_lunch_tupper_01', 0.3, 0.8, { y: 0.75 });
-    this.entity('planning', 'Mesa · Repartir prioridades', [0, 0, -.4]);
+    this.entity('planning', t('world.prompts.planning'), [0, 0, -.4]);
     this.npc('lolaHq', 'Lola', [-2, 0, 2.7], '#c77657'); this.npc('daniHq', 'Dani', [0, 0, 3.2], '#789bad'); this.npc('nicoHq', 'Nico', [2, 0, 2.7], '#b8a45b');
     // Crisis corner
-    this.place('prop_crisis_board_01', 5.7, 4.8, { rot: P, collider: [1.3, 1.7, 0.4] }); this.entity('crisisBoard', 'Tablón · Resolver la crisis', [5.7, 0, 3.6]);
+    this.place('prop_crisis_board_01', 5.7, 4.8, { rot: P, collider: [1.3, 1.7, 0.4] }); this.entity('crisisBoard', t('world.prompts.crisisBoard'), [5.7, 0, 3.6]);
     this.place('prop_whiteboard_01', 7.7, 4.6, { rot: P, collider: true });
     // Lola's treasury desk and the back wall
     this.place('prop_desk_lola_01', -6, 5.7, { rot: P, collider: [1.5, 0.8, 0.8] }); this.place('prop_printer_01', -7.9, 6.9, { rot: P });
@@ -199,9 +200,9 @@ export class World {
   }
   hall() {
     this.roomBase('#e3cfb4');
-    this.label('SALÓN MULTIUSOS · HOY: DEMOCRACIA', [0, 4.3, 7.8], 7, .7, '#653f55');
+    this.label(t('world.signs.hall'), [0, 4.3, 7.8], 7, .7, '#653f55');
     this.place('prop_door_double_01', 0, -7.84);
-    this.label('SALIDA', [0, 3.4, -7.69], 1.6, 0.4, '#653f55').rotation.y = P; this.exit('hallDoor', 'Puerta · Salida', [0, 0, -6.75], P, 'SALIDA');
+    this.label(t('world.signs.exit'), [0, 3.4, -7.69], 1.6, 0.4, '#653f55').rotation.y = P; this.exit('hallDoor', t('world.prompts.hallDoor'), [0, 0, -6.75], P, t('world.posts.exit'));
     // Stage: the box keeps the walkable collider, the GLB dresses it.
     this.box('stage', [12, .55, 5], [0, .28, 4], '#6d5366').isVisible = false;
     this.place('env_hall_stage_01', 0, 4.05, { rot: P, scale: [1.4, 1, 1.17] }); this.place('prop_stage_steps_01', -4.8, 1.0, { rot: P });
@@ -210,14 +211,14 @@ export class World {
     // Lecterns: you, Rival A (tech), Rival B (populist), Rival C (Fox, 'hard'); see DEBATE_ROLES in src/data/parties.js.
     for (const x of [-0.4, 1.1, 2.6, 4.1]) this.place('prop_debate_lectern_01', x, 3.3, { rot: P, y: .55 });
     this.place('prop_moderator_desk_01', 1.1, 5.1, { rot: P, y: .55 }); this.place('prop_debate_timer_01', 1.1, 5.0, { rot: P, y: 1.55 });
-    this.entity('debateDesk', 'Mesa · Empezar el debate', [0, 0, 1.8]);
+    this.entity('debateDesk', t('world.prompts.debateDesk'), [0, 0, 1.8]);
     this.extra('Rival A', 'char_rival_a_01', [1.1, .55, 3.9], P); this.extra('Rival B', 'char_rival_b_01', [2.6, .55, 3.9], P); this.extra('Rival C', 'char_rival_c_01', [4.1, .55, 3.9], P);
     this.extra('Moderadora', 'char_moderator_01', [1.1, .55, 5.7], P);
     // Final rally and results
     this.place('prop_podium_02', -3, 3.7, { rot: P, y: .55 }); this.collider('podium', [0.9, 1.2, 0.65], [-3, 1.15, 3.7]);
-    this.entity('finalPodium', 'Atril · Último mitin', [-3, 0, 0.8]);
+    this.entity('finalPodium', t('world.prompts.finalPodium'), [-3, 0, 0.8]);
     this.place('prop_campaign_backdrop_01', -2.5, 5.45, { rot: P, y: .55, scale: 0.72 });
-    this.place('prop_results_screen_01', 3.0, 5.55, { rot: P, y: .55, scale: 0.85 }); this.entity('results', 'Pantalla · Ver resultados', [-1, 0, 0.8]);
+    this.place('prop_results_screen_01', 3.0, 5.55, { rot: P, y: .55, scale: 0.85 }); this.entity('results', t('world.prompts.results'), [-1, 0, 0.8]);
     for (const x of [-5.6, 5.6]) this.place('prop_speaker_01', x, 4.5, { rot: P, y: .55 });
     for (const x of [-7.6, 7.6]) { this.place('prop_stage_light_01', x, -0.5, { rot: x < 0 ? 0.5 : -0.5 }); this.place('prop_balloon_cluster_01', x, 4.6); }
     // Audience: two rows of folding chairs either side of the aisle

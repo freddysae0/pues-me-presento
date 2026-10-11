@@ -188,7 +188,7 @@ export class UI {
     this.hud.innerHTML = `<div class="hud-brand"><span class="hud-mark" aria-hidden="true">P</span><span class="hud-name"><span class="hud-party"></span><small>${icon('pin')}<span class="hud-place"></span></small></span></div>
 <div class="stats" role="group" aria-label="Estado de la campaña">${STATS.map(s => `<div class="stat" data-stat="${s.key}" style="--c:${s.color}" title="${s.label}"><span class="stat-icon">${icon(s.icon)}</span><span class="stat-body"><span class="stat-label">${s.label}</span><b>0</b><span class="stat-bar"><i></i><em title="Umbral 48"></em></span></span></div>`).join('')}</div>
 <div class="objective"><span class="obj-tab">${icon('flag')}MISIÓN <span class="obj-step"></span></span><strong></strong><p></p></div>
-<div class="controls" aria-label="Controles"><span>${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')} mover</span><span>${keycap('⇧')} correr</span><span>${keycap('E')} hablar / usar</span><span>${keycap('M')} móvil</span><span>${keycap('Esc')} pausa</span></div>`;
+<div class="controls" aria-label="Controles"><span>${keycap('W')}${keycap('A')}${keycap('S')}${keycap('D')} mover</span><span>${keycap('⇧')} correr</span><span>${keycap('Espacio')} saltar</span><span>${keycap('E')} hablar / usar</span><span>${keycap('M')} móvil</span><span>${keycap('Esc')} pausa</span></div>`;
   }
   bump(el, delta) {
     el.classList.remove('bump-up', 'bump-down'); void el.offsetWidth; el.classList.add(delta > 0 ? 'bump-up' : 'bump-down');

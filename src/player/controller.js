@@ -1,13 +1,15 @@
 import { MeshBuilder, Vector3, UniversalCamera, Ray } from '@babylonjs/core';
 import { createCharacter } from '../npc/character.js';
+const JUMP_SPEED = 5.2, GRAVITY = 16; // ~0.85 m hop, ~0.65 s in the air
 export class Player {
   constructor(world, canvas, settings) {
-    this.world = world; this.canvas = canvas; this.settings = settings; this.keys = new Set(); this.yaw = world.cameraYaw; this.pitch = 0.36; this.enabled = false;
+    this.world = world; this.canvas = canvas; this.settings = settings; this.keys = new Set(); this.yaw = world.cameraYaw; this.pitch = 0.36; this.enabled = false; this.vy = 0; this.grounded = true; this.jumpQueued = false;
     const s = world.scene;
     this.body = MeshBuilder.CreateBox('player-collider', { size: 0.1 }, s); this.body.isVisible = false; this.body.isPickable = false; this.body.position.copyFrom(world.spawn); this.body.ellipsoid.set(0.32, 0.87, 0.32); this.body.ellipsoidOffset.set(0, 0.9, 0);
     this.character = createCharacter(s, 'Tú', '#d77952'); this.shadow = world.shadow(0, 0, 0.42);
     this.camera = new UniversalCamera('follow-camera', new Vector3(0, 4, -8), s); this.camera.minZ = 0.08; this.camera.fov = 0.88; s.activeCamera = this.camera;
     this.abort = new AbortController(); const options = { signal: this.abort.signal };
+    window.addEventListener('keydown', e => { if (this.enabled && e.code === 'Space' && !e.repeat && !['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(document.activeElement?.tagName)) { this.jumpQueued = true; e.preventDefault(); } }, options);
     window.addEventListener('keydown', e => { if (this.enabled && ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ShiftLeft', 'ShiftRight'].includes(e.code)) { this.keys.add(e.code); e.preventDefault(); } }, options);
     window.addEventListener('keyup', e => this.keys.delete(e.code), options);
     window.addEventListener('blur', () => this.keys.clear(), options);
@@ -17,7 +19,7 @@ export class Player {
     this.update(0.016);
   }
   setEnabled(value) {
-    const was = this.enabled; this.enabled = value; this.keys.clear();
+    const was = this.enabled; this.enabled = value; this.keys.clear(); this.jumpQueued = false;
     if (!value) { this.dragging = false; document.exitPointerLock?.(); return; }
     // Back to play straight from a menu click/key: capture the mouse with that same gesture so no extra click is needed.
     if (!was && navigator.userActivation?.isActive && document.pointerLockElement !== this.canvas) this.canvas.requestPointerLock?.()?.catch?.(() => {});
@@ -29,9 +31,16 @@ export class Player {
       moving = x !== 0 || z !== 0; running = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
       const v = new Vector3(x * Math.cos(this.yaw) + z * Math.sin(this.yaw), 0, z * Math.cos(this.yaw) - x * Math.sin(this.yaw));
       if (moving) { v.normalize().scaleInPlace((running ? 5 : 3) * dt); this.character.root.rotation.y = Math.atan2(v.x, v.z); }
-      v.y = -1.5 * dt; this.body.moveWithCollisions(v);
+      // Jump (Space) with simple gravity. Grounded keeps the old gentle push down so slopes and steps still snap.
+      if (this.jumpQueued && this.grounded) { this.vy = JUMP_SPEED; this.grounded = false; }
+      this.jumpQueued = false;
+      this.vy = this.grounded ? 0 : Math.max(-14, this.vy - GRAVITY * dt);
+      v.y = this.grounded ? -1.5 * dt : this.vy * dt;
+      const before = this.body.position.y; this.body.moveWithCollisions(v); const moved = this.body.position.y - before;
+      if (v.y < 0) { this.grounded = moved > v.y * 0.5; if (this.grounded) this.vy = 0; } // blocked below: standing on something
+      else if (moved < v.y * 0.5) this.vy = 0; // bumped a ceiling
     }
-    this.character.root.position.copyFrom(this.body.position); this.character.update(dt, gesture || (moving ? running ? 'run' : 'walk' : 'idle'));
+    this.character.root.position.copyFrom(this.body.position); this.character.update(dt, gesture || (!this.grounded ? 'jump' : moving ? running ? 'run' : 'walk' : 'idle'));
     this.shadow.position.x = this.body.position.x; this.shadow.position.z = this.body.position.z;
     if (this.cinematic) { this.camera.position.set(5.5, 4.2, 6.8); this.camera.setTarget(new Vector3(0, 1.1, 6.5)); return; }
     const target = this.body.position.add(new Vector3(0, 1.45, 0));

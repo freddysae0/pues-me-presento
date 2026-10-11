@@ -20,9 +20,31 @@ function bounds(buffer) {
   return { buffer, start: a / buffer.sampleRate, end: (b + 1) / buffer.sampleRate };
 }
 
+// Campaign order: the menu theme first, then each scene's track roughly when the player will need it.
+const PREFETCH = ['theme', 'flat', 'plaza', 'hq', 'trend', 'speech', 'crisis'];
+
 // Looping background music with crossfades. Time is the AudioContext clock, so suspending it pauses everything.
 export class Music {
-  constructor(audio, settings) { this.audio = audio; this.settings = settings; this.buffers = new Map(); this.wanted = null; this.current = null; this.ducked = false; }
+  constructor(audio, settings) {
+    this.audio = audio; this.settings = settings; this.buffers = new Map(); this.bytes = new Map(); this.wanted = null; this.current = null; this.ducked = false;
+    this.prefetch();
+  }
+  /** Download every track's MP3 in the background from page load, one at a time so it never competes much with the
+   *  3D assets. Downloading needs no user gesture (decoding does), so on slow connections the music is already here
+   *  when a scene asks for it. A track requested before its turn is fetched immediately (see fetchBytes). */
+  async prefetch() {
+    if (typeof fetch !== 'function' || typeof window === 'undefined') return;
+    const order = [...new Set([...PREFETCH, ...Object.keys(catalog)])].filter(id => catalog[id]);
+    for (const id of order) await this.fetchBytes(id).catch(() => null);
+  }
+  fetchBytes(id) {
+    if (!this.bytes.has(id)) {
+      const p = fetch(catalog[id].path).then(r => r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status)));
+      p.catch(() => this.bytes.delete(id)); // a failed download may be retried later
+      this.bytes.set(id, p);
+    }
+    return this.bytes.get(id);
+  }
   level() { return BASE * this.settings.music * (this.ducked ? DUCK : 1); }
   play(id) { this.wanted = catalog[id] ? id : null; this.sync(); }
   duck(on) { if (this.ducked !== on) { this.ducked = on; this.updateVolume(); } }
@@ -38,7 +60,8 @@ export class Music {
     this.voice(track, c.currentTime + 0.05, FADE);
   }
   load(id) {
-    if (!this.buffers.has(id)) this.buffers.set(id, fetch(catalog[id].path).then(r => r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status))).then(data => this.audio.context.decodeAudioData(data)).then(bounds).catch(() => null));
+    // decodeAudioData detaches its input, so it gets a copy: the downloaded bytes stay for a later re-decode.
+    if (!this.buffers.has(id)) this.buffers.set(id, this.fetchBytes(id).then(data => this.audio.context.decodeAudioData(data.slice(0))).then(bounds).catch(() => null));
     for (const key of this.buffers.keys()) if (this.buffers.size > CACHE && key !== id && key !== this.current?.id) this.buffers.delete(key);
     return this.buffers.get(id);
   }

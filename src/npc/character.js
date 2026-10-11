@@ -121,7 +121,7 @@ function riggedCharacter(scene, name, container) {
   scene.onBeforeAnimationsObservable.add(() => { if (pending !== null) step(pendingDt, pending); pending = null; pendingDt = 0; });
   return self;
   function step(dt, state) {
-    if (state !== requested) { requested = state; wait = state === 'walk' || state === 'run' ? 0 : lag + rand() * 0.12; }
+    if (state !== requested) { requested = state; wait = state === 'walk' || state === 'run' || state === 'jump' ? 0 : lag + rand() * 0.12; }
     let changed = false;
     if (requested !== effective) { wait -= dt; if (wait <= 0) { effective = requested; changed = true; } }
     hold -= dt; grace -= dt; if (effective === 'idle' && clip === 'idle') idleTimer -= dt;

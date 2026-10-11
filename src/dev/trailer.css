@@ -1,0 +1,63 @@
+/* Modo tráiler (solo dev). Tarjetas con el lenguaje visual del juego: papel crema, tinta gruesa, sombra dura,
+   Fredoka/Nunito locales. Medidas en vh para que 1080p dé los tamaños del storyboard (5,2vh ≈ 56 px).
+   Las tarjetas viven en .tr-safe: el cuadrado central de 100vh × 100vh, que es lo que conserva el recorte 1:1 centrado. */
+body.tr-on { background: #120d1c; }
+#trailer-stage { position: fixed; inset: 0; overflow: hidden; will-change: transform; }
+#trailer-layer { position: fixed; inset: 0; z-index: 10000; pointer-events: none; overflow: hidden; }
+#trailer-layer .tr-veil, #trailer-layer .tr-fade { position: absolute; inset: 0; opacity: 0; }
+#trailer-layer .tr-safe { position: absolute; top: 0; bottom: 0; left: 50%; width: 100vh; translate: -50% 0; }
+
+/* Oculto siempre en el tráiler: panel dev, «Espacio saltar», botón del globo, marcadores. HUD/prompt/toast por plano. */
+body.tr-on #dev-panel, body.tr-on .skip-hint, body.tr-on #dialogue .dialogue-next, body.tr-on .phone-hud-button { display: none !important; }
+body.tr-on, body.tr-on * { cursor: none !important; }
+body.tr-on :focus-visible { outline: none !important; }
+body.tr-hud-off #hud { visibility: hidden; }
+body.tr-prompt-off #interaction { visibility: hidden; }
+body.tr-toast-off #toast { visibility: hidden; }
+body.tr-subs-off #cinema .subtitle { visibility: hidden; }
+
+.tr-card { position: absolute; --tr-accent: var(--tomato); --tr-size: 6.2vh; font-family: var(--display); color: var(--ink); transform-origin: 50% 50%; will-change: transform, opacity; }
+.tr-card .icon { width: 1em; height: 1em; }
+.tr-pos-center { left: 50%; top: 50%; translate: -50% -50%; text-align: center; }
+.tr-pos-top { left: 50%; top: 7%; translate: -50% 0; text-align: center; }
+.tr-pos-bottom { left: 50%; bottom: 9%; translate: -50% 0; text-align: center; }
+.tr-pos-top-left { left: 5%; top: 7%; transform-origin: 0 0; }
+.tr-pos-top-right { right: 5%; top: 7%; transform-origin: 100% 0; text-align: right; }
+.tr-pos-bottom-left { left: 5%; bottom: 9%; transform-origin: 0 100%; }
+.tr-pos-bottom-right { right: 5%; bottom: 9%; transform-origin: 100% 100%; text-align: right; }
+.tr-pos-lower { left: 5%; bottom: 17%; transform-origin: 0 100%; }
+.tr-pos-xy { translate: -50% -50%; text-align: center; }
+
+/* verb / title / small: tarjeta de papel */
+.tr-verb, .tr-title, .tr-small { display: grid; justify-items: inherit; gap: .9vh; padding: 2.6vh 4vh 2.8vh; background: var(--paper); border: .55vh solid var(--ink); border-radius: 3vh; box-shadow: 0 .9vh 0 var(--ink), 0 2.4vh 5vh #2b214055; white-space: nowrap; }
+.tr-verb strong, .tr-title strong, .tr-small strong { font: 700 var(--tr-size)/1.02 var(--display); letter-spacing: -.01em; }
+.tr-small { --tr-size: 5.2vh; padding: 1.8vh 3vh 2vh; border-radius: 2.4vh; }
+.tr-title { --tr-size: 8.4vh; padding: 4vh 6vh 4.2vh; white-space: normal; max-width: 92vh; }
+.tr-card p { font: 700 3.2vh/1.3 var(--body); color: var(--ink-soft); margin: 0; }
+.tr-eyebrow { justify-self: start; display: inline-flex; align-items: center; gap: .8vh; padding: 1vh 1.8vh .9vh; font: 600 2.3vh/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: #fff; background: var(--tr-accent); border: .35vh solid var(--ink); border-radius: 99vh; box-shadow: 0 .4vh 0 var(--ink); transform: rotate(-2deg); --icon-hole: var(--tr-accent); }
+.tr-pos-center .tr-eyebrow, .tr-pos-top .tr-eyebrow, .tr-pos-bottom .tr-eyebrow { justify-self: center; }
+.tr-badge { position: absolute; top: -3.2vh; left: -2.6vh; display: grid; place-items: center; width: 6.4vh; height: 6.4vh; font-size: 3.2vh; background: var(--sun); border: .45vh solid var(--ink); border-radius: 50%; box-shadow: 0 .45vh 0 var(--ink); --icon-hole: var(--sun); }
+
+/* sticker: como el botón primario del juego */
+.tr-sticker { display: inline-flex; align-items: center; gap: 1.4vh; padding: 2vh 3.6vh; font: 700 var(--tr-size)/1 var(--display); background: var(--sun); border: .5vh solid var(--ink); border-radius: 2.6vh; box-shadow: 0 .9vh 0 var(--ink); white-space: nowrap; --icon-hole: var(--sun); }
+
+/* lower: rótulo de nombre (rivales del debate) */
+.tr-lower { display: grid; gap: 0; white-space: nowrap; }
+.tr-lower strong { justify-self: start; padding: 1.4vh 2.4vh 1.2vh; font: 700 4.6vh/1 var(--display); background: var(--paper); border: .45vh solid var(--ink); border-radius: 1.8vh 1.8vh 1.8vh 0; box-shadow: 0 .6vh 0 var(--ink); position: relative; z-index: 1; }
+.tr-lower span { justify-self: start; margin-top: -.3vh; padding: 1vh 2vh .9vh; font: 600 2.4vh/1 var(--display); letter-spacing: .12em; color: #fff; background: var(--tr-accent); border: .45vh solid var(--ink); border-top: 0; border-radius: 0 0 1.6vh 1.6vh; }
+
+/* logo: «Pues me / presento.» como en el menú */
+.tr-logo { margin: 0; font: 700 15vh/.86 var(--display); letter-spacing: -.02em; text-align: center; white-space: nowrap; }
+.tr-logo .tr-l1 { display: block; font-size: .5em; color: var(--white); paint-order: stroke fill; -webkit-text-stroke: .09em var(--ink); text-shadow: 0 .08em 0 var(--ink); transform: rotate(-3deg); }
+.tr-logo .tr-l2 { display: block; }
+.tr-logo .tr-letter { display: inline-block; color: var(--sun); paint-order: stroke fill; -webkit-text-stroke: .1em var(--ink); text-shadow: 0 .07em 0 var(--ink); }
+.tr-logo .tr-letter:nth-child(3n+2) { color: #ff9a62; }
+.tr-logo .tr-letter:last-child { color: var(--tomato); }
+.tr-logo + p { margin-top: 3vh; text-align: center; font: 700 3.6vh/1.2 var(--display); color: var(--ink); }
+
+/* lines: firma / CTA escalonadas */
+.tr-lines { display: grid; justify-items: center; gap: 2.2vh; text-align: center; white-space: nowrap; }
+.tr-lines .tr-line { font: 700 3.4vh/1.2 var(--display); color: var(--ink); }
+.tr-lines .tr-strong { padding: 1.8vh 3vh; font: 700 4.4vh/1.15 var(--display); white-space: normal; max-width: 90vh; background: var(--sun); border: .5vh solid var(--ink); border-radius: 2.4vh; box-shadow: 0 .8vh 0 var(--ink); }
+.tr-chips { display: flex; gap: 1.2vh; justify-content: center; }
+.tr-chips span { padding: .9vh 1.8vh; font: 600 2.6vh/1 var(--display); background: var(--white); border: .35vh solid var(--ink); border-radius: 99vh; box-shadow: 0 .4vh 0 var(--ink); }

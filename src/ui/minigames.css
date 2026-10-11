@@ -1,0 +1,89 @@
+/* Minigames and cinematic extras. Same kit as the rest of the UI: cream paper, ink outline, chunky shadows.
+   Minigame HUDs live in #overlay with class `minigame-overlay`: the world stays visible and clickable around them. */
+
+#overlay.minigame-overlay { padding: 0; align-items: stretch; justify-content: stretch; background: none; backdrop-filter: none; pointer-events: none; overflow: hidden; }
+#overlay.minigame-overlay.centered { align-items: center; justify-content: center; padding: 28px; background: radial-gradient(ellipse at center, #2b214022 0%, #2b214077 100%); pointer-events: auto; }
+.mg-card { width: min(600px, 100%); }
+.mg-card h1 { font-size: 34px; }
+.mg-howto { display: grid; gap: 10px; margin: 0 0 18px; padding: 0; list-style: none; }
+.mg-howto li { display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: var(--paper-2); border: 2px solid var(--ink); border-radius: 14px; }
+.mg-howto li > span { display: inline-flex; gap: 4px; min-width: 120px; color: var(--ink); }
+.mg-howto li b { font: 700 15px/1.3 var(--body); }
+
+.mg-hud { position: absolute; inset: 0; pointer-events: none; }
+.mg-hud > * { pointer-events: auto; }
+.mg-top { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-start; gap: 12px; }
+.mg-hud > .mg-bottom { position: absolute; left: 0; right: 0; bottom: 22px; width: min(820px, calc(100vw - 32px)); max-height: none; margin: 0 auto; padding: 18px 22px 12px; overflow: visible; }
+.mg-bottom .fine { margin: 8px 0 0; text-align: center; }
+.mg-keys { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); padding: 10px 18px; font: 600 14px/1 var(--display); background: var(--paper); border: var(--line) solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); white-space: nowrap; }
+.chip-big { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; font: 600 16px/1 var(--display); background: var(--paper); border: var(--line) solid var(--ink); border-radius: 999px; box-shadow: 0 4px 0 var(--ink); white-space: nowrap; }
+.chip-big b { font-size: 20px; min-width: 1.4em; text-align: right; }
+.secondary.small, .primary.small { padding: 8px 14px; font-size: 15px; border-radius: 14px; box-shadow: 0 4px 0 var(--ink); }
+
+/* ---------------------------------------------------------------- rhythm lane */
+.rhythm { position: relative; }
+.rhythm-lane { position: relative; height: 74px; background: var(--paper-2); border: var(--line) solid var(--ink); border-radius: 999px; box-shadow: inset 0 5px 0 #2b21401a; overflow: hidden; }
+.rhythm-hit { position: absolute; top: 50%; left: 10%; width: 60px; height: 60px; transform: translate(-50%, -50%); border: 4px dashed var(--ink); border-radius: 50%; background: #ffffff80; }
+.rhythm-note { position: absolute; top: 50%; display: grid; place-items: center; width: 52px; height: 52px; transform: translate(-50%, -50%); font: 700 28px/1 var(--display); color: var(--ink); background: var(--c); border: 3px solid var(--ink); border-radius: 50%; box-shadow: 0 4px 0 var(--ink); }
+.rhythm-note.word { width: auto; min-width: 52px; padding: 0 16px; border-radius: 999px; font-size: 22px; white-space: nowrap; color: #fff; text-shadow: 0 2px 0 var(--ink); }
+.rhythm-judge { position: absolute; top: 50%; left: 22%; transform: translateY(-50%); font: 700 26px/1 var(--display); letter-spacing: .04em; color: var(--grass-dark); opacity: 0; pointer-events: none; }
+.rhythm-judge.perfect { color: var(--grass-dark); } .rhythm-judge.good { color: var(--sky); } .rhythm-judge.miss, .rhythm-judge.whiff { color: var(--tomato); }
+.rhythm-judge.pop { animation: judge-pop .6s var(--pop) both; }
+@keyframes judge-pop { 0% { opacity: 0; transform: translateY(-50%) scale(.6); } 20% { opacity: 1; transform: translateY(-50%) scale(1.15); } 70% { opacity: 1; transform: translateY(-50%) scale(1); } 100% { opacity: 0; transform: translateY(-90%) scale(1); } }
+.rhythm-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font: 600 15px/1 var(--display); }
+.rhythm-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.rhythm-legend kbd { background: var(--c); }
+.rhythm-count { position: absolute; left: 50%; top: 28vh; transform: translate(-50%, -50%); font: 700 120px/1 var(--display); color: var(--sun); -webkit-text-stroke: 5px var(--ink); paint-order: stroke fill; text-shadow: 0 8px 0 var(--ink); pointer-events: none; }
+
+/* «Hazlo viral»: the phone's recording frame */
+.rec-frame { position: absolute; left: 50%; top: 50%; width: min(36vh, 40vw); aspect-ratio: 9 / 16; transform: translate(-50%, -56%); border: 4px solid #ffffffd9; border-radius: 28px; box-shadow: 0 0 0 4px #2b214055; pointer-events: none !important; }
+.rec-frame .rec { position: absolute; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font: 700 14px/1 var(--display); color: #fff; background: #e23b3bdd; border-radius: 999px; }
+.rec-frame .rec .icon { width: 12px; height: 12px; animation: rec-blink 1s steps(2) infinite; }
+@keyframes rec-blink { 50% { opacity: 0; } }
+
+/* Final rally */
+.attention { width: 360px; margin: 0; padding: 14px 18px; }
+.rally-phrase { min-height: 2.6em; margin: 0 0 12px; font: 700 22px/1.3 var(--body); text-align: center; }
+.rally-phrase b { padding: 0 8px; font-family: var(--display); color: #fff; background: var(--tomato); border: 3px solid var(--ink); border-radius: 10px; }
+.rally-phrase.fresh { animation: rise-in .3s ease both; }
+
+/* Debate duel */
+.mg-hud > .duel-panel { left: auto; right: 22px; width: min(560px, calc(100vw - 32px)); margin: 0; }
+.duel-claim { font: 700 18px/1.4 var(--body); margin: 8px 0 12px; }
+.duel-interrupt { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; padding: 10px 14px; font: 700 15px/1.3 var(--body); background: var(--tomato); color: #fff; border: 3px solid var(--ink); border-radius: 14px; animation: shake .4s ease both; }
+.duel-interrupt kbd { color: var(--ink); }
+.duel-options .choice-list { margin-top: 12px; }
+.duel-options .choice-list button { padding: 10px 14px; }
+.duel-options .choice-body b { font: 700 15px/1.35 var(--body); }
+.duel-options button.right { background: #c9f2c4; }
+.duel-options button.wrong { background: #ffd0c6; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* Six chairs */
+.chairs-card { margin: 0; padding: 26px 20px 12px; width: 360px; }
+.chairs-card .eyebrow { top: -16px; }
+.chairs-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.chairs-row i { display: grid; place-items: center; width: 44px; height: 44px; background: var(--paper-2); border: 3px solid var(--ink); border-radius: 12px; opacity: .45; }
+.chairs-row i.filled { background: var(--c-org); opacity: 1; animation: judge-pop-in .4s var(--pop) both; }
+.chairs-row .icon { width: 26px; height: 26px; }
+.chairs-hint { margin: 8px 0 0; text-align: center; }
+@keyframes judge-pop-in { from { transform: scale(.5); } }
+
+/* ---------------------------------------------------------------- cinematics */
+.skip-hint { position: absolute; right: 22px; bottom: calc(11vh + 12px); display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; font: 600 14px/1 var(--display); color: #fff; background: #120d1c99; border-radius: 999px; animation: fade-in .6s 1s ease both; }
+
+body[data-mode=minigame] #cinema .subtitle { bottom: auto; top: 190px; }
+body[data-mode=minigame] .controls, body[data-mode=cinematic] .controls { visibility: hidden; }
+body[data-mode=minigame] .objective { opacity: .35; transform: rotate(-1.2deg) scale(.94); }
+body[data-mode=pause] .rhythm-judge, body[data-mode=pause] .rec-frame .icon, body[data-mode=pause] .skip-hint { animation-play-state: paused; }
+
+@media (max-width: 760px) {
+  .mg-top { top: auto; bottom: calc(100% - 120px); flex-wrap: wrap; justify-content: center; width: calc(100vw - 24px); }
+  .rhythm-note { width: 42px; height: 42px; font-size: 22px; }
+  .rhythm-count { font-size: 80px; }
+  .mg-keys { white-space: normal; text-align: center; width: calc(100vw - 32px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rhythm-judge.pop { animation: none; opacity: 1; }
+  .duel-interrupt, .rally-phrase.fresh, .chairs-row i.filled { animation: none; }
+}

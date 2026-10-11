@@ -1,0 +1,12 @@
+node_modules/
+dist/
+artifacts/
+*.blend1
+.DS_Store
+.muxel/
+out/
+
+# Fuentes y salidas regenerables (npm run assets / trailer)
+art/*.blend
+art/previews/
+art/review/

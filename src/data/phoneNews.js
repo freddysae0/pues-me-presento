@@ -47,7 +47,7 @@ export const notifications = [
   { id: 'register-tech', after: 'register', app: 'social', from: (s, { rivals }) => `@${handle(rivals.tech.name)}`,
     text: (s, { rivals, party }) => `Bienvenidos, «${party}». Cuando queráis gestionar algo más grande que un portal, os paso un gráfico. Sube. Es bueno. #${tag(rivals.tech.party)}` },
   { id: 'leave-neighbors', after: 'leave', app: 'neighbors', from: 'Encarni (1.ºA)',
-    text: 'Aviso: el vecino del tercero ha bajado con carpeta y cara de ir a dar un discurso. O se presenta a algo o vende enciclopedias.' },
+    text: 'Aviso: el del segundo ha bajado con carpeta y cara de ir a dar un discurso. O se presenta a algo o vende enciclopedias.' },
 
   // ---------------------------------------------------------------- capítulo 2 · la plaza
   { id: 'neighbor-listened', after: 'neighbor', app: 'neighbors', from: 'Marisa (mercería)', when: memory('listened'),
@@ -61,7 +61,7 @@ export const notifications = [
   { id: 'program-populist', after: 'program', app: 'social', from: (s, { rivals }) => `@${handle(rivals.populist.name)}`,
     text: (s, { rivals }) => `Eso que propone el partido nuevo ya lo propusimos nosotros. Y lo contrario, también. Rectificar es de sabios. #${tag(rivals.populist.party)}` },
   { id: 'speech-coherent', after: 'speech', app: 'press', from: 'El Eco del Barrio', when: s => !!s.speech?.coherent, title: 'Un discurso con letra pequeña… leída en voz alta',
-    text: 'En la plaza dijo qué costaba su propuesta y a quién molesta. Un vecino aplaudió y luego se dio cuenta de que era él.' },
+    text: 'En la plaza dijo qué costaba su propuesta y a quién molesta. Un vecino aplaudió. Luego miró alrededor, por si era el único. No lo era.' },
   { id: 'speech-everything', after: 'speech', app: 'social', from: '@clips_del_barrio', when: s => s.speech?.picks?.[1] === 'everything',
     text: '«¡De todo para todos!» Clip viral. Comentario destacado: «¿Y quién lo paga?». Respuesta con más likes: «Tu primo».' },
   { id: 'speech-mixed', after: 'speech', app: 'social', from: '@clips_del_barrio', when: s => s.speech && !s.speech.coherent && s.speech.picks?.[1] !== 'everything',
@@ -129,11 +129,11 @@ export const notifications = [
   { id: 'final-everything', after: 'finalSpeech', app: 'group', from: 'Lola', when: choice('final', 'everything'),
     text: '«De todo para todos, por decreto». Me he tapado la cara con el presupuesto. Literalmente. Tengo tinta en la nariz.' },
   { id: 'reflection', after: 'finalSpeech', app: 'neighbors', from: 'Encarni (1.ºA)',
-    text: 'Jornada de reflexión. Recordatorio: no se puede hacer campaña en el grupo. Dicho esto, mañana todos a votar al del tercero.' },
+    text: 'Jornada de reflexión. Recordatorio: no se puede hacer campaña en el grupo. Dicho esto, mañana todos a votar al del segundo.' },
   { id: 'election-won', after: 'election', app: 'press', from: 'El Eco del Barrio', when: s => !!s.result?.won, title: (s, { party }) => `«${party}» gana en el barrio`,
     text: 'Noche de recuento con sillas plegables. Los rivales ya han anunciado que «hacen autocrítica», que en su idioma significa cambiar el logo.' },
   { id: 'election-lost', after: 'election', app: 'press', from: 'El Eco del Barrio', when: s => !!s.result && !s.result.won, title: 'Noche electoral: el barrio se lo piensa',
-    text: 'El partido nuevo no llega esta vez. Su equipo recoge las sillas y anuncia que vuelve a la crisis a intentarlo. Lo dicen en serio.' },
+    text: 'El partido nuevo no llega esta vez. Su equipo recoge las sillas y anuncia que se presenta a las siguientes. Lo dicen en serio. Paco ya ha apartado las sillas.' },
 ];
 
 // Políticas que va anunciando cada rival. Ancladas en docs/RESEARCH_SPAIN.md (vivienda, turismo, sanidad,

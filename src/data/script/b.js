@@ -71,10 +71,10 @@ export default {
   // Trayectos a pie (ver actual.js): solo título y objetivo; prompt, loading y sign caen de actual.js.
   travel: {
     hqBrief: { title: 'Desplazamiento institucional', objective: 'La sede está en el bajo del portal de al lado del bar de Paco. Ve a la puerta y pulsa E.' },
-    video: { title: 'Salir a medios (a la plaza)', objective: 'El argumentario dice «salir a medios». Marisa lo traduce: baja a la plaza. Sal por la puerta de la sede.' },
+    video: { title: 'Salir a medios (a la plaza)', objective: 'Para grabar hace falta luz y vecinos. Sal por la puerta de la sede y baja a la plaza.' },
     crisis: { title: 'Reunión de urgencia, con tupper', objective: 'Algo arde en el grupo de la sede. Vuelve por el portal junto al bar.' },
     debate: { title: 'Traslado al salón multiusos', objective: 'Sal por la puerta de la sede. En el salón multiusos ya han montado los atriles.' },
-    finalPrep: { title: 'Pisar territorio', objective: 'Dani lo llama «territorio»; Marisa, «la plaza de toda la vida». Sal del salón por la puerta doble.' },
+    finalPrep: { title: 'Pisar territorio', objective: 'Sal del salón por la puerta doble. Queda una semana y se gana en la calle.' },
     finalSpeech: { title: 'Transporte público, como el votante medio', objective: 'Ve a la parada junto al quiosco y coge el 27 hasta el salón multiusos.' },
   },
 
@@ -83,7 +83,7 @@ export default {
     shade: { title: 'Sombra antes que un observatorio del calor', cost: '2 de presupuesto', benefit: 'Árboles, toldos, una fuente que funcione y el bajo vacío de la esquina como sala fresca para mayores. Sin plan director: con jardinero.', compromise: 'Se pierden plazas de aparcamiento, la terraza de Paco encoge dos mesas y el sobrino de Marisa vuelve a la doble fila.' },
     parking: { title: 'Que el barrio pueda trabajar', cost: '2 de presupuesto', benefit: 'Carga y descarga con horario, plazas rotatorias para el comercio, aparcabicis para repartidores y licencias de terraza en días, no en trimestres.', compromise: 'Más coches en la plaza y otro agosto a pleno sol. El banco seguirá hirviendo.' },
     festival: { title: 'Cultura después de las ocho', cost: '2 de presupuesto', benefit: 'Escenario para grupos del barrio, cine de verano y un local de ensayo que gestiona la asociación de vecinos, no una fundación con logo.', compromise: 'Ruido dos noches por semana; los del primero, con tapones. La sombra y la carga y descarga, al cajón.' },
-    housing: { title: 'Que el tercero vuelva a tener vecinos', cost: '2 de presupuesto', benefit: 'Licencias de obra en semanas, el solar de la esquina para construir, bajos y áticos rehabilitables y desalojo rápido de okupaciones, para que quien tiene un piso cerrado se atreva a alquilarlo.', compromise: 'Construir tarda más que anunciar un tope. No sale en el telediario, te llamarán «el de los caseros» y la plaza sigue sin sombra.' },
+    housing: { title: 'Que el tercero vuelva a tener vecinos', cost: '2 de presupuesto', benefit: 'Licencias en semanas, construir en el solar de la esquina y que alquilar un piso cerrado no dé miedo.', compromise: 'Construir tarda más que anunciar un tope. No sale en el telediario, te llamarán «el de los caseros» y la plaza sigue sin sombra.' },
   },
 
   // ------------------------------------------------------------------------------------------------ videollamada
@@ -96,7 +96,7 @@ export default {
       { label: 'Comunicación. Relato sí, humo no.', reply: 'Trato. Cada mañana a las 7:00, argumentario en el grupo. Corto, claro y sin la palabra «resiliencia». Bueno, casi sin.' },
       { label: 'Portavoz. Tendrás que contestar preguntas.', reply: '¿Ruedas de prensa con preguntas? Eso ya no lo hace nadie. Vale: seremos vintage.' },
     ] },
-    nico: { role: 'Traduce al cristiano', line: 'Hago turnos en un almacén y conozco a todo el portal. Yo movilizo. Pero si alguien dice «transversal» en una reunión, me bajo a por pipas.', choices: [
+    nico: { role: 'Conoce a todo el portal', line: 'Hago turnos en un almacén y conozco a todo el portal. Yo movilizo. Pero si alguien dice «transversal» en una reunión, me bajo a por pipas.', choices: [
       { label: 'Organización. Tú pones los horarios.', reply: 'Hecho. Reuniones de veinte minutos. Si dura más, es que alguien está leyendo un argumentario.' },
       { label: 'Actos. Necesitamos tu voz de megáfono.', reply: 'Cuando tocó el Gordo en el bar, bajó la calle entera en zapatillas. Dame un motivo así y te lleno la plaza.' },
     ] },
@@ -126,7 +126,7 @@ export default {
     eyebrow: 'PROGRAMA · PRESUPUESTO: 2 CRÉDITOS',
     title: 'Priorizar: elegir, pero con corbata.',
     intro: 'Solo cabe una propuesta. Las demás no se «calendarizan» ni se «posponen a una segunda fase»: se quedan sin hacer. El barrio sabe distinguir.',
-    promisedBothNote: 'Marisa recuerda que prometiste sombra, aparcamiento y piso para su sobrino. Traducción: ninguna opción paga todo eso. −6 de credibilidad al concretar.',
+    promisedBothNote: 'Marisa recuerda que prometiste sombra, aparcamiento y piso para su sobrino. Ninguna opción paga todo eso. −6 de credibilidad al concretar.',
     toast: (state, ctx) => `Programa: ${ctx.proposal.title}. Ahora, a explicarlo en el atril. Con preguntas.`,
   },
 
@@ -136,10 +136,10 @@ export default {
     parts: {
       opening: { title: '01 / Romper el hielo', prompt: 'Siete personas. Dos esperan el bus, una ha bajado a por el pan y otra te graba por si dices «resiliencia».', options: {
         listen: 'Antes de hablar, he venido a escuchar. De verdad, no en «proceso de escucha».',
-        joke: 'Seré breve. Lo digo como político, así que poneos cómodos. Es broma: tres minutos.',
+        joke: 'Seré breve. Lo digo como político, así que poneos cómodos.',
         grand: '¡Hoy iniciamos una hoja de ruta transversal hacia un nuevo horizonte de país!',
       } },
-      argument: { title: '02 / Decir algo concreto', prompt: 'Ahora toca defender lo que has clavado en el tablón. Marisa ya está traduciendo por dentro.', options: {
+      argument: { title: '02 / Decir algo concreto', prompt: 'Ahora toca defender lo que has clavado en el tablón. Marisa ya ha sacado la libreta.', options: {
         shade: 'Sombra y un sitio fresco para los mayores, aunque perdamos aparcamiento. Sin plan director: con árboles.',
         parking: 'Que quien trabaja pueda descargar, aunque la plaza siga sin árboles este verano.',
         festival: 'Cultura y un local para los chavales, con horario de ruido pactado y por escrito.',
@@ -148,7 +148,7 @@ export default {
       } },
       close: { title: '03 / Saber acabar', prompt: 'Marisa mira el reloj. Es un reloj que ha visto muchas campañas.', options: {
         accountable: 'Si no lo cumplimos, nos lo preguntáis aquí. Y contestaremos, que ya es novedad.',
-        chant: '¡Por un barrio de barrio!',
+        chant: '¡Menos atasco y más gazpacho!',
         forever: 'Para concluir, y en aras de la brevedad, mis siguientes veintisiete ejes…',
       } },
     },
@@ -167,33 +167,33 @@ export default {
   // ------------------------------------------------------------------------------------------------ diálogos
   dialogues: {
     neighbor: [
-      { speaker: 'Marisa', text: '¿Tú eres el del partido nuevo? Ya me ha llegado tu argumentario: me metieron en el grupo sin querer. Me levanto a las cinco, cariño. Lo leo antes que vosotros.' },
+      { speaker: 'Marisa', text: '¿Tú eres el del partido nuevo? Me ha llegado vuestro argumentario: Dani me metió en el grupo sin querer. Lo leo a las cinco, con la primera hornada.' },
       { speaker: 'Marisa', text: 'Mi sobrino reparte y no tiene dónde parar. Treinta y cuatro años, en su cuarto de pequeño. Y el tercero lleva cerrado desde lo de la ley. ¿Por dónde empiezas?', choices: [
-        { text: 'Por escucharte. ¿Qué te quita el sueño?', memory: 'listened', response: '¿El sueño? Me levanto a las cinco, no me da tiempo a perderlo. Lo que me quita es la paciencia: la cita de mi madre es para dentro de meses, y la espera, al sol.' },
-        { text: 'Por todo: sombra, aparcamiento y un piso para tu sobrino.', memory: 'promisedBoth', response: 'Eso en vuestro idioma se llama «paquete integral de medidas». En el mío se llama «a ver». Apuntado queda.' },
+        { text: 'Por escucharte. ¿Qué te quita el sueño?', memory: 'listened', response: '¿A mí? La paciencia. La cita de mi madre es para dentro de meses, y la espera, al sol.' },
+        { text: 'Por todo: sombra, aparcamiento y un piso para tu sobrino.', memory: 'promisedBoth', response: 'Eso en la tele se llama «paquete integral de medidas». Aquí, «ya veremos». Lo apunto en la libreta.' },
         { text: 'Por hacer ruido: un festival que nos ponga en el mapa.', memory: 'spectacle', response: '¿En el mapa? Si salimos en todas las webs de pisos turísticos: «auténtico barrio castizo». Lo único castizo que queda soy yo, y cierro a las dos.' },
       ] },
-      { speaker: 'Marisa', text: 'Ahí tienes el tablón. Da para una cosa. Una. Y en el atril, nada de «poner en valor» ni «hoja de ruta». Si lo dices, te lo traduzco en voz alta.' },
+      { speaker: 'Marisa', text: 'Ahí tienes el tablón. Da para una cosa. Una. Y en el atril, nada de «poner en valor» ni «hoja de ruta». Si lo dices, te tiro una barra de pan.' },
     ],
 
     aftermath: state => {
       const m = state.memories, speech = state.speech || {};
-      const memory = m.promisedBoth ? 'Me prometiste sombra, aparcamiento y piso para mi sobrino. En tu idioma, «medidas transversales». En el mío, tres cosas y ninguna fecha.'
+      const memory = m.promisedBoth ? 'Me prometiste sombra, aparcamiento y piso para mi sobrino. Tres cosas y ninguna fecha. Página doce de la libreta.'
         : m.listened ? 'Antes me has escuchado. Parece poco, pero los que vienen con el discurso plastificado no levantan la vista del papel.'
         : m.spectacle ? 'Lo del festival lo ha oído todo el barrio. Los del primero ya preguntan si los tapones van en el programa o en un real decreto.'
         : 'Ya has bajado del cajón. Te temblaban las piernas menos que al del año pasado. Y el del año pasado traía autobús de simpatizantes.';
       const coherent = {
-        shade: 'Has dicho que quitas coches para poner sombra. Mi sobrino ya no te habla; mi madre ya te defiende. Traducción: has elegido. Ya era hora.',
+        shade: 'Has dicho que quitas coches para poner sombra. Mi sobrino ya no te habla; mi madre ya te defiende. Has elegido. Ya era hora.',
         parking: 'Has elegido la furgoneta antes que los árboles. Mi sobrino te invita a una caña. Yo, en agosto, te mando a mi madre a esperar el bus a tu salón.',
         festival: 'Cultura hasta las doce y ruido con horario. Por lo menos no lo has llamado «dinamización del espacio público».',
         housing: 'Has dicho «construir» y «tarda». En un atril eso no se oye: se oye «tope» y «ya». Mi sobrino dice que es la primera vez que le explican por qué no hay pisos.',
       }[state.proposal];
       const result = speech.coherent ? (coherent || 'No estoy de acuerdo en todo. Pero has dicho qué cuesta. Eso, en un atril, es casi exótico.')
-        : speech.picks?.[1] === 'everything' ? 'Árboles, aparcamiento, festivales y pisos por decreto. Cariño, eso no es un programa: es un decreto ómnibus. Mete tanto que nadie puede votar en contra.'
+        : speech.picks?.[1] === 'everything' ? 'Árboles, aparcamiento, festivales y pisos por decreto. Cariño, eso no es un programa: es un decreto ómnibus.'
         : 'El tablón decía una cosa y tú otra. En la tele lo llaman «matizar». Aquí, «cambiar de idea entre el pan y el autobús».';
       const closing = m.pacoLucia ? 'Me ha dicho Paco que le has conseguido camarera. Eso no sale en ningún argumentario. Sale en la cola del pan, que es donde se vota.'
         : (speech.reach || 0) >= 12 ? 'Dani dice que el vídeo lo han visto miles. Aquí lo han visto doce. Y los doce están empadronados. Tú verás a quién le hablas.'
-        : 'Bueno. Ya tienes partido, equipo y traductora. Ahora sí estás en política.';
+        : 'Bueno. Ya tienes partido, equipo y una señora vigilándote. Ahora sí estás en política.';
       return [{ speaker: 'Marisa', text: memory }, { speaker: 'Marisa', text: result }, { speaker: 'Marisa', text: closing }];
     },
 
@@ -203,7 +203,7 @@ export default {
         { speaker: 'Paco', text: 'Paco, bar La Última. Aquí se cierran más pactos que en el Congreso, y todos se pagan a escote. ¿Qué te pongo?', choices: [
           { text: '¿Qué le pedirías tú a un partido nuevo?', memory: 'pacoHeard', response: 'Mira, te digo una cosa: que diga cuánto cuesta. Y si no lo sabe, «no lo sé». En la tele no lo he oído nunca. Sería tendencia, que dice mi sobrina.' },
           { text: '¿Nos prestas sillas para el acto?', memory: 'chairs', response: 'Seis. Es un préstamo, no una subvención: vuelven a su sitio y vuelven limpias.' },
-          { text: '¿Cómo va el negocio?', memory: 'pacoRent', response: 'Me han subido el local, la luz y el café. Ahora dice uno en la tele que va a topar el precio del café. Pues pondré «café de temporada». Como con los pisos.' },
+          { text: '¿Cómo va el negocio?', memory: 'pacoRent', response: 'Me han subido el local, la luz y el café. Ahora uno en la tele quiere topar el precio del café. Pues pondré «café de temporada». Como con los pisos.' },
         ] },
         { speaker: 'Paco', text: 'Y mira ese cartel: «Se busca camarero». Lleva colgado desde Semana Santa. Ya tiene más antigüedad que mi cafetera.', choices: [
           { text: '¿Has probado a pagar más?', memory: 'pacoWages', response: 'Sí. Subo el café diez céntimos y me cae una reseña: «atraco». Si me lo subiera Hacienda, se llamaría «redistribuir».' },
@@ -221,20 +221,19 @@ export default {
         video: 'El argumentario de hoy pone «tono cercano». ¿Más cerca? Si te veo desde el horno.',
         crisis: 'El vídeo me ha llegado por el grupo de la parroquia, el del gimnasio y el de mi cuñada. Cuando llega a mi cuñada, cariño, ya es oficial.',
         debate: 'Esta noche, debate. Si te oigo «la mayoría social», te tiro una barra de pan desde la grada.',
-        finalPrep: 'Última vuelta. Pásate por la parada del bus: la gente que espera tiene tiempo y tiene quejas. En tu idioma, «escucha activa».',
-      }[s.mission] || 'Yo aquí, traduciendo. Tú a lo tuyo, que te estoy leyendo.';
+        finalPrep: 'Última vuelta. Pásate por la parada del bus: la gente que espera tiene tiempo y tiene quejas. Escucha, que ellos ya llevan un rato hablando.',
+      }[s.mission] || 'Yo aquí, con mi libreta. Tú a lo tuyo, que te estoy mirando.';
       return [{ speaker: 'Marisa', text }];
     },
 
     lola: {
       crisis: { after: 'Lola: «Sigo con el BOE de hoy. Disposición final séptima. Ha muerto el mayordomo».', lines: [
-        { speaker: 'Lola', text: 'Mientras os peleáis con el vídeo, yo he leído el BOE. Decreto ómnibus: pensiones, bonobús, regularización exprés y el cambio de hora. Todo en el mismo paquete.' },
-        { speaker: 'Lola', text: 'Si votas no al cambio de hora, votas contra las pensiones. Un thriller. Lo nuestro es más pequeño: nos miran las cuentas con lupa.', choices: [
+        { speaker: 'Lola', text: 'Mientras os peleáis con el vídeo, he leído el BOE. Un decreto mete pensiones y cambio de hora en el mismo paquete. Lo nuestro es más pequeño: nos miran las cuentas con lupa.', choices: [
           { text: 'Publícalas. Todas.', memory: 'lolaBooks', response: 'Hasta el tíquet del celo. Si nos pillan, que sea en un redondeo de siete céntimos. Y en documento aparte, no metido entre las pensiones.' },
           { text: 'Mejor esperamos a que pase.', memory: 'lolaWait', response: 'Eso en un ministerio se llama «no consta». Las crisis no pasan: se archivan. Y alguien las desarchiva la semana antes de votar.' },
         ] },
       ] },
-      default: { after: 'Lola: «Pestaña nueva: “Cosas que no vamos a pagar”. Doce filas. Ninguna se llama “escudo”».', lines: [
+      default: { after: 'Lola: «Pestaña nueva: “Cosas que no vamos a pagar”. Doce filas. Ninguna dice “se financia sola”».', lines: [
         { speaker: 'Lola', text: 'He abierto la hoja «Campaña_DEFINITIVA_v3». Ingresos: el bote del grupo y cuarenta euros que nos debe Dani. Él lo llama «deuda histórica».' },
         { speaker: 'Lola', text: 'Gastos: pizzas, imprenta y una factura de «consultoría de relato» firmada por el primo de Dani. ¿La pago?', choices: [
           { text: 'Ni de broma. Todo con factura y todo publicado.', memory: 'lolaReceipts', response: 'Gracias. Si salimos en las noticias, que sea por aburridos. Transparencia de verdad, no un portal que se cae el día que lo buscas.' },
@@ -264,9 +263,9 @@ export default {
     },
 
     nico: {
-      crisis: { after: 'Nico: «Estoy montando sillas. Una se pliega sola. Será de Centrifugados».', lines: [
+      crisis: { after: 'Nico: «Estoy montando sillas. Una se pliega sola. Esa no vota».', lines: [
         { speaker: 'Nico', text: 'Ha bajado Ernesto, el del tercero. Tiene el piso cerrado desde lo del tope y dice que el vídeo le llama especulador. Luego me ha pedido que le riegue las plantas.', choices: [
-          { text: 'Invítale a la asamblea del portal. Que dé su versión.', memory: 'nicoInvite', response: 'Vale. Dice que alquilaría si supiera que lo recupera. A ver, en cristiano: él tiene un piso, el sobrino de Marisa no, y en medio hay una ley. Qué cosas.' },
+          { text: 'Invítale a la asamblea del portal. Que dé su versión.', memory: 'nicoInvite', response: 'Vale. Dice que alquilaría si supiera que lo recupera. O sea: él tiene un piso, el sobrino de Marisa no, y en medio hay una ley. Qué cosas.' },
           { text: 'Ni caso. Es el enemigo.', memory: 'nicoEnemy', response: '¿Enemigo? Es Ernesto, del colegio. Le debo un balón desde sexto. Dani le llama «gran tenedor» en el argumentario. Tiene un piso. Heredado.' },
         ] },
       ] },
@@ -274,7 +273,7 @@ export default {
         { speaker: 'Nico', text: 'He pegado cuarenta carteles. Junto al de Fox había un caballo de verdad, en doble fila. Le he pegado uno también. No ha protestado. Primer apoyo.' },
         { speaker: 'Nico', text: 'Por cierto, la Reme dice que vota a quien le consiga cita con el cardiólogo antes de Navidad. ¿Qué le digo?', choices: [
           { text: 'La verdad: que eso no se arregla en un mes, pero lo vamos a pelear.', memory: 'nicoTruth', response: 'Se lo digo. Pondrá la cara que ponen las señoras cuando oyen la verdad: pena y respeto, a partes iguales. El voto, ya veremos.' },
-          { text: 'Dile que sí. Cita en una semana.', memory: 'nicoPromise', response: 'A ver, en cristiano: le prometes en una semana lo que la lista de espera tarda medio año. En diciembre, la Reme te lo traduce. Con el bastón.' },
+          { text: 'Dile que sí. Cita en una semana.', memory: 'nicoPromise', response: 'Le prometes en una semana lo que la lista de espera tarda medio año. En diciembre, la Reme te lo recuerda. Con el bastón.' },
           { text: 'Que venga a la asamblea del portal y nos lo cuente a todos.', memory: 'nicoAssembly', response: 'Buena idea. Los del bloque llevan años quejándose cada uno en su rellano. Juntos son una junta de vecinos: una investidura, pero con derrama.' },
         ] },
       ] },
@@ -289,7 +288,7 @@ export default {
       subs: [
         [null, 'Domingo, 23:47. «Un vídeo más y lo dejo».'],
         ['Presentadora (TV)', 'Última hora: el Gobierno disuelve las Cortes y convoca generales. La presidenta comparece sin preguntas: «las respuestas ya están en la web».'],
-        ['Presentadora (TV)', 'Paciente dice que ya le toca. Fox ha llegado a caballo. Sumandos ha perdido otro pétalo. Seguiremos informando. O no.'],
+        ['Presentadora (TV)', 'Los partidos de siempre ya graban vídeos en mangas de camisa. Uno ha llegado a caballo. Seguiremos informando. O no.'],
         [null, 'BZZZ. Cuarenta y tres mensajes. «¿Y si nos presentamos?». «jajaja». «No, en serio».'],
         ['Tú', '¿Elecciones? ¿Otra vez? …A ver qué dice el grupo.'],
       ],
@@ -299,7 +298,7 @@ export default {
       banner: ['EL BARRIO', 'Bajar a la calle'],
       subs: [
         [null, 'La plaza: panadería, bar, un banco al sol y más opiniones por metro cuadrado que un plató.'],
-        ['Marisa', '¡Anda, el del argumentario! Ven, que te lo traduzco.'],
+        ['Marisa', '¡Anda, el del partido nuevo! Ven, que te tengo que contar.'],
         ['Paco', 'Si vas a salvar el barrio, que sea después del café. Y el café se paga, que no es una medida.'],
       ],
     },
@@ -317,7 +316,7 @@ export default {
       subs: [
         [null, 'Salón multiusos. Hoy: debate. Mañana: zumba. A ojo, la diferencia es pequeña.'],
         ['moderator', 'Buenas noches. Varios atriles, un cronómetro y una jarra de agua que nadie va a abrir. Primer bloque: vivienda.'],
-        ['tech', 'Con sentido común: ya nos toca. Y si no nos toca, ganaremos igual, que es lo nuestro.'],
+        ['tech', 'Vengo con sentido común. Y con paciencia. Sobre todo con paciencia: llevamos años esperando a que nos toque.'],
         ['populist', 'Frente a la ola reaccionaria, avanzamos. En la dirección que toque esta noche.'],
       ],
     },
@@ -358,7 +357,7 @@ export default {
       choices: {
         explain: { title: 'Explicar la propuesta y lo que cuesta', flavor: 'Un minuto, plano fijo y una pizarra de Lola con la letra pequeña en grande' },
         chairs: { title: 'El baile de las sillas de Paco', flavor: 'Coreografía con sillas prestadas. Nadie sabe qué propones; todo el mundo sabe que te caes en el segundo once' },
-        neighbor: { title: 'Dejar hablar a Marisa', flavor: 'Ella habla del calor, del local que le han subido y de la cita de su madre. Tú sujetas el móvil. No hace falta traducción' },
+        neighbor: { title: 'Dejar hablar a Marisa', flavor: 'Ella habla del calor, del local que le han subido y de la cita de su madre. Tú sujetas el móvil y te callas' },
         debunk: { title: 'Desmontar el bulo del día', flavor: 'Un canal de Se Acabó La Siesta dice que quieres prohibir las terrazas. Lo desmientes con el plano entero, que es el arma secreta' },
       },
     },
@@ -377,7 +376,7 @@ export default {
     },
     debate: {
       eyebrow: 'CAPÍTULO 5 · EL DEBATE', title: 'Tres rivales, una moderadora y una jarra sin abrir.',
-      intro: (state, { rivals: { tech, populist, hard, moderator } }) => `A un lado —solo del escenario—, ${populist.name}, del ${populist.party}, con chapa de colores y dos argumentarios: el de la mañana y el de la tarde. Al otro, ${tech.name}, del ${tech.party}, que promete derogar cosas que no nombra. Al fondo, ${hard?.name || 'Covadonga del Muro'}, de Fox, que ha intentado entrar a caballo. ${moderator}: «¿A qué renuncia su programa?».`,
+      intro: (state, { rivals: { tech, populist, hard, moderator } }) => `A un lado, ${populist.name}, de ${populist.party}, con dos argumentarios: el de la mañana y el de la tarde. Al otro, ${tech.name}, de ${tech.party}, que promete derogar cosas que no nombra. Al fondo, ${hard?.name || 'Covadonga del Muro'}, de Fox, que ha intentado entrar a caballo. ${moderator}: «¿A qué renuncia su programa?».`,
       choices: {
         tradeoff: { title: 'Defender la renuncia concreta', flavor: (state, { rivals }) => `Dices qué pierdes y a quién molestas. ${rivals.tech.name} pide «un dato». Se lo das. Lo apunta para derogarlo` },
         attack: { title: (state, { rivals }) => `Sacarle la hemeroteca a ${rivals.populist.name}`, flavor: 'Le lees lo que dijo hace dos campañas. Aplauso fácil, titular fácil, cero propuestas. Ella: «Rectificar es de sabios»' },
@@ -405,9 +404,9 @@ export default {
             festival: '“Habrá cultura y habrá ruido pactado. Esto elegimos, esto cuesta y aquí responderemos.”',
             housing: '“Habrá más pisos porque los construiremos, no porque los anunciemos. Tardará. Y aquí responderemos.”',
           }[state.proposal] || '“Esto elegimos, esto cuesta y aquí responderemos.”'),
-          flavor: 'Lo dices sin papeles. Marisa escucha la frase entera y no tiene nada que traducir',
+          flavor: 'Lo dices sin papeles. Marisa abre la libreta y, por primera vez, no apunta nada',
         },
-        viral: { title: '“¡Por un barrio de barrio!”', flavor: 'Dani lo emite en directo. Se corea. Nadie sabe qué significa; esa noche lo copian los asesores de tres partidos' },
+        viral: { title: '“¡Menos atasco y más gazpacho!”', flavor: 'Dani lo emite en directo. Se corea. Nadie sabe qué significa. A las doce ya lo han copiado tres partidos' },
         everything: { title: '“Mañana habrá de todo para todos, por decreto.”', flavor: (state, { rivals }) => `Aplauso enorme. Lola se tapa la cara con el presupuesto. ${rivals.populist.name} te escribe: «¿Hablamos?»` },
       },
     },
@@ -417,7 +416,7 @@ export default {
   endings: {
     victory: {
       eyebrow: 'NOCHE ELECTORAL · VICTORIA', title: 'Hay más sillas que personas.',
-      text: state => `Marisa aplaude una vez. Lola pregunta quién ha guardado las facturas. El Bloque Bisagra ya ha llamado dos veces: «¿Qué ofrecéis?». A las 7:00 llega el último argumentario de Dani: «Hemos ganado». Marisa contesta: «Esto lo entiendo». ${{
+      text: state => `Marisa aplaude una vez. Lola pregunta quién ha guardado las facturas. Paciente y Sobrevivo ya han llamado dos veces: «¿Qué ofrecéis?». A las 7:00 llega el último argumentario de Dani: «Hemos ganado». Marisa contesta: «Esto lo entiendo». ${{
         shade: 'Mañana empieza lo difícil: explicarle a la furgoneta del sobrino dónde aparca.',
         parking: 'Mañana empieza lo difícil: el primer agosto sin árboles con tu nombre en la placa.',
         festival: 'Mañana empieza lo difícil: la primera reunión con los del primero, que ya han traído tapones para ti.',
@@ -442,7 +441,7 @@ export default {
       takes: {
         explain: 'Pizarra de Lola, plano fijo y cada gesto subraya un coste.',
         chairs: 'El baile de las sillas. Paco mira con los brazos cruzados.',
-        neighbor: 'Marisa habla; tú marcas el ritmo detrás, discretamente. Más o menos.',
+        neighbor: 'Marisa habla del calor; tú, detrás, marcas el ritmo sin que se note. Se nota.',
         debunk: 'Desmontas el bulo con gestos claros: esto no, esto sí, esto cuesta.',
       },
       intro: (state, ctx) => `Móvil en el trípode, vecinos mirando y Dani contando. ${ctx.take} Haz cada pose cuando su icono llegue al círculo. El ritmo suma alcance, no votos.`,
